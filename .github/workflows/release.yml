@@ -1,0 +1,225 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g., v0.3.0)'
+        required: true
+        type: string
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      version: ${{ steps.version.outputs.version }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.tag }}"
+          else
+            VERSION=${GITHUB_REF#refs/tags/}
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: 2SEARX2COOL ${{ steps.version.outputs.version }}
+          draft: true
+          prerelease: false
+          body: |
+            ## What's New
+            
+            ### Features
+            - Feature 1
+            - Feature 2
+            
+            ### Bug Fixes
+            - Fix 1
+            - Fix 2
+            
+            ### Performance Improvements
+            - Improvement 1
+            - Improvement 2
+            
+            ## Installation
+            
+            Download the appropriate installer for your platform below.
+            
+            ### Windows
+            - `2SEARX2COOL-Setup-*.exe` - Installer (recommended)
+            - `2SEARX2COOL-*-win.zip` - Portable version
+            
+            ### macOS
+            - `2SEARX2COOL-*.dmg` - Disk image
+            - `2SEARX2COOL-*-mac.zip` - ZIP archive
+            
+            ### Linux
+            - `2SEARX2COOL-*.AppImage` - AppImage (recommended)
+            - `2SEARX2COOL-*.deb` - Debian/Ubuntu package
+            - `2SEARX2COOL-*.rpm` - RPM package
+            
+            ## Checksums
+            See `checksums.txt` for SHA256 checksums of all files.
+
+  build-release:
+    name: Build Release
+    needs: create-release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: linux
+          - os: windows-latest
+            artifact_name: windows
+          - os: macos-latest
+            artifact_name: macos
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build application
+        run: npm run build:optimized
+      
+      # macOS code signing
+      - name: Import certificates (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.MACOS_CERTIFICATE }}
+          p12-password: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+      
+      # Windows code signing
+      - name: Setup code signing (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          echo "${{ secrets.WINDOWS_CERTIFICATE }}" | base64 -d > cert.pfx
+        shell: bash
+      
+      - name: Package application
+        run: npm run dist:optimized
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_LINK: ${{ matrix.os == 'windows-latest' && 'cert.pfx' || '' }}
+          CSC_KEY_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PWD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      
+      - name: Generate checksums
+        run: |
+          cd release
+          sha256sum * > checksums.txt || shasum -a 256 * > checksums.txt
+        shell: bash
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-${{ matrix.artifact_name }}
+          path: release/
+          retention-days: 1
+
+  publish-release:
+    name: Publish Release
+    needs: [create-release, build-release]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: release-artifacts
+      
+      - name: Display structure
+        run: ls -la release-artifacts/*
+      
+      - name: Upload Release Assets
+        run: |
+          for dir in release-artifacts/*; do
+            if [ -d "$dir" ]; then
+              for file in "$dir"/*; do
+                if [ -f "$file" ]; then
+                  echo "Uploading $file"
+                  asset_name=$(basename "$file")
+                  curl -X POST \
+                    -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                    -H "Content-Type: application/octet-stream" \
+                    --data-binary @"$file" \
+                    "${{ needs.create-release.outputs.upload_url }}?name=${asset_name}"
+                fi
+              done
+            fi
+          done
+      
+      - name: Publish release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const release_id = ${{ needs.create-release.outputs.release_id }};
+            
+            await github.rest.repos.updateRelease({
+              owner,
+              repo,
+              release_id,
+              draft: false
+            });
+
+  update-homebrew:
+    name: Update Homebrew Formula
+    needs: [publish-release, create-release]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update Homebrew formula
+        env:
+          HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ needs.create-release.outputs.version }}
+          # Script to update homebrew formula
+          echo "Updating Homebrew formula for version ${VERSION}"
+
+  announce:
+    name: Announce Release
+    needs: [publish-release, create-release]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Announce on Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          VERSION=${{ needs.create-release.outputs.version }}
+          curl -X POST $DISCORD_WEBHOOK \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"content\": \"🎉 **2SEARX2COOL ${VERSION} Released!**\n\nCheck out the latest release: https://github.com/${{ github.repository }}/releases/tag/${VERSION}\"
+            }"

@@ -109,3 +109,87 @@ wheels/
 # User data
 user-data/
 config.json
+user-preferences.json
+search-history.db
+plugin-cache/
+downloads/
+crash-dumps/
+
+# Security
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+.credentials/
+secrets/
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
+.coverage
+htmlcov/
+junit.xml
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Cache
+.cache/
+.parcel-cache/
+.turbo/
+.next/
+.nuxt/
+.vuepress/dist/
+.temp/
+.docusaurus/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+data/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# Archives
+*.zip
+*.tar
+*.rar
+*.7z
+
+# Performance profiling
+*.cpuprofile
+*.heapsnapshot
+*.heapprofile
+
+# Bundle analysis
+bundle-stats.json
+bundle-stats.html
+stats.json
+
+# Documentation generation
+docs/_site/
+docs/.jekyll-cache/
+typedoc/
+
+# Package manager files
+package-lock.json.backup
+yarn.lock.backup
+pnpm-lock.yaml.backup
+
+# Development certificates (keep in version control)
+!build/*.pem
+!build/*.cert
+
+# Keep these configuration files
+!.vscode/extensions.json
+!.vscode/settings.json.example

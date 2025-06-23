@@ -13,7 +13,7 @@ export function createWindow(): BrowserWindow {
     trafficLightPosition: { x: 15, y: 15 },
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
+      sandbox: true,
       contextIsolation: true,
       nodeIntegration: false
     },
@@ -52,7 +52,7 @@ export function createSearchWindow(query?: string): BrowserWindow {
     height: 600,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
+      sandbox: true,
       contextIsolation: true,
       nodeIntegration: false
     }

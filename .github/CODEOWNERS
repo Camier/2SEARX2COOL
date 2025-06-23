@@ -1,0 +1,49 @@
+# 2SEARX2COOL Code Owners
+# These owners will be automatically requested for review when someone opens a pull request
+
+# Global owners
+* @2searx2cool-maintainers
+
+# Documentation
+*.md @2searx2cool-docs
+/docs/ @2searx2cool-docs
+/README.md @2searx2cool-maintainers @2searx2cool-docs
+
+# Core application
+/src/main/ @2searx2cool-core
+/src/renderer/ @2searx2cool-ui
+/src/preload/ @2searx2cool-security
+
+# Build and configuration
+/build/ @2searx2cool-devops
+/scripts/ @2searx2cool-devops
+/.github/ @2searx2cool-devops
+/package.json @2searx2cool-maintainers
+/tsconfig.json @2searx2cool-maintainers
+/webpack.*.js @2searx2cool-devops
+
+# Security-sensitive files
+/src/main/security/ @2searx2cool-security
+/src/main/auth/ @2searx2cool-security
+*.key @2searx2cool-security
+*.pem @2searx2cool-security
+
+# Testing
+/tests/ @2searx2cool-qa
+/e2e/ @2searx2cool-qa
+*.test.ts @2searx2cool-qa
+*.spec.ts @2searx2cool-qa
+
+# Plugins
+/plugins/ @2searx2cool-plugins
+/src/plugin-api/ @2searx2cool-plugins @2searx2cool-core
+
+# Search engines
+/src/engines/ @2searx2cool-engines
+/src/search/ @2searx2cool-engines
+
+# Performance-critical code
+/src/main/performance/ @2searx2cool-performance
+/src/main/cache/ @2searx2cool-performance
+/src/main/utils/MemoryManager.ts @2searx2cool-performance
+/src/main/utils/StartupPerformance.ts @2searx2cool-performance

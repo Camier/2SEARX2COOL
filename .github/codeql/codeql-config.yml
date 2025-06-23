@@ -1,0 +1,21 @@
+name: "2SEARX2COOL CodeQL config"
+
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+query-filters:
+  - exclude:
+      id: js/unused-local-variable
+  - exclude:
+      id: js/missing-rate-limiting
+
+paths-ignore:
+  - node_modules
+  - '**/*.test.ts'
+  - '**/*.spec.ts'
+  - tests
+  - e2e
+  - build
+  - release
+  - .github

@@ -1,0 +1,74 @@
+{
+  "id": "example-music-enhancer",
+  "name": "Music Search Enhancer",
+  "version": "1.0.0",
+  "description": "Enhances music search results with additional metadata",
+  "author": "Your Name <your.email@example.com>",
+  "homepage": "https://github.com/yourusername/music-enhancer",
+  "main": "./dist/index.js",
+  "engines": {
+    "2searx2cool": ">=0.3.0",
+    "node": ">=16.0.0"
+  },
+  "keywords": ["music", "search", "enhancement", "metadata"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/music-enhancer.git"
+  },
+  "permissions": [
+    "search",
+    "storage",
+    "network",
+    "notifications"
+  ],
+  "contributes": {
+    "searchEngines": [
+      {
+        "id": "musicbrainz",
+        "name": "MusicBrainz",
+        "category": "music",
+        "icon": "./icons/musicbrainz.png"
+      }
+    ],
+    "commands": [
+      {
+        "command": "music-enhancer.analyze",
+        "title": "Analyze Music Results",
+        "category": "Music"
+      }
+    ],
+    "settings": [
+      {
+        "id": "music-enhancer.apiKey",
+        "title": "API Key",
+        "description": "Your MusicBrainz API key",
+        "type": "string",
+        "default": ""
+      },
+      {
+        "id": "music-enhancer.enhanceResults",
+        "title": "Enhance Results",
+        "description": "Automatically enhance music search results",
+        "type": "boolean",
+        "default": true
+      }
+    ],
+    "menus": {
+      "search/context": [
+        {
+          "command": "music-enhancer.analyze",
+          "when": "resourceScheme == music"
+        }
+      ]
+    }
+  },
+  "activationEvents": [
+    "onSearch:music",
+    "onCommand:music-enhancer.analyze"
+  ],
+  "dependencies": {
+    "axios": "^1.6.0",
+    "music-metadata": "^7.14.0"
+  }
+}

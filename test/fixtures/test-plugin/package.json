@@ -1,0 +1,9 @@
+{
+  "name": "test-plugin",
+  "version": "1.0.0",
+  "displayName": "Test Plugin",
+  "description": "A test plugin for unit tests",
+  "author": "Test Author",
+  "main": "index.js",
+  "permissions": ["cache", "ui"]
+}

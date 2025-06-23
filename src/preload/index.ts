@@ -165,6 +165,27 @@ const api = {
     showSaveDialog: (options: any) => ipcRenderer.invoke('show-save-dialog', options),
     
     showOpenDialog: (options: any) => ipcRenderer.invoke('show-open-dialog', options)
+  },
+
+  // Error reporting
+  errors: {
+    report: (errorInfo: any) => ipcRenderer.invoke('error:report', errorInfo),
+    reportSync: (errors: any[]) => ipcRenderer.sendSync('error:report-sync', errors),
+    getRecent: (limit?: number) => ipcRenderer.invoke('error:get-recent', limit),
+    clear: () => ipcRenderer.invoke('error:clear'),
+    getReportConfig: () => ipcRenderer.invoke('error:get-report-config'),
+    setReportConfig: (config: any) => ipcRenderer.invoke('error:set-report-config', config),
+    exportReports: (outputPath: string) => ipcRenderer.invoke('error:export-reports', outputPath),
+    getPendingReports: () => ipcRenderer.invoke('error:get-pending-reports')
+  },
+
+  // App control
+  app: {
+    restart: () => ipcRenderer.send('app:restart'),
+    getVersion: () => ipcRenderer.invoke('app:get-version'),
+    getPath: (name: string) => ipcRenderer.invoke('app:get-path', name),
+    showItemInFolder: (path: string) => ipcRenderer.send('app:show-item-in-folder', path),
+    openExternal: (url: string) => ipcRenderer.send('app:open-external', url)
   }
 };
 

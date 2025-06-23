@@ -1,0 +1,74 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "2searx2cool-maintainers"
+    assignees:
+      - "2searx2cool-bot"
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+    groups:
+      # Group all minor and patch updates together
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      # Group all Electron-related updates
+      electron:
+        patterns:
+          - "electron*"
+      # Group all testing dependencies
+      testing:
+        patterns:
+          - "@types/jest"
+          - "jest*"
+          - "@testing-library/*"
+          - "playwright*"
+      # Group all build tool updates
+      build-tools:
+        patterns:
+          - "webpack*"
+          - "babel*"
+          - "typescript"
+          - "ts-*"
+          - "esbuild*"
+      # Group all linting/formatting tools
+      linting:
+        patterns:
+          - "eslint*"
+          - "prettier*"
+          - "@typescript-eslint/*"
+    
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "UTC"
+    reviewers:
+      - "2searx2cool-devops"
+    assignees:
+      - "2searx2cool-bot"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

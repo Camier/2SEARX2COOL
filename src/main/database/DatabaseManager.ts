@@ -11,6 +11,16 @@ import {
   Playlist,
   AnalyticsEvent
 } from '../../shared/types';
+import {
+  SearchRow,
+  CachedResultRow,
+  PluginDataRow,
+  PreferenceRow,
+  PlaylistRow,
+  AnalyticsRow,
+  CountRow,
+  SizeRow
+} from './types';
 
 export class DatabaseManager {
   private db: Database.Database | null = null;
@@ -165,7 +175,7 @@ export class DatabaseManager {
       LIMIT ?
     `);
 
-    const rows = stmt.all(limit) as any[];
+    const rows = stmt.all(limit) as SearchRow[];
     return rows.map(row => ({
       ...row,
       engines: JSON.parse(row.engines)
@@ -182,7 +192,7 @@ export class DatabaseManager {
       LIMIT 100
     `);
 
-    const rows = stmt.all(`%${query}%`) as any[];
+    const rows = stmt.all(`%${query}%`) as SearchRow[];
     return rows.map(row => ({
       ...row,
       engines: JSON.parse(row.engines)
@@ -198,7 +208,7 @@ export class DatabaseManager {
       WHERE id = ? AND expires_at > ?
     `);
 
-    const row = stmt.get(key, Date.now()) as any;
+    const row = stmt.get(key, Date.now()) as CachedResultRow | undefined;
     if (!row) return null;
 
     // Update access count and last accessed
@@ -255,11 +265,11 @@ export class DatabaseManager {
       WHERE plugin_id = ? AND key = ?
     `);
 
-    const row = stmt.get(pluginId, key) as any;
+    const row = stmt.get(pluginId, key) as PluginDataRow | undefined;
     return row ? JSON.parse(row.value) : null;
   }
 
-  async setPluginData(pluginId: string, key: string, value: any): Promise<void> {
+  async setPluginData(pluginId: string, key: string, value: unknown): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const stmt = this.db.prepare(`
@@ -280,11 +290,11 @@ export class DatabaseManager {
       WHERE key = ?
     `);
 
-    const row = stmt.get(key) as any;
+    const row = stmt.get(key) as PreferenceRow | undefined;
     return row ? JSON.parse(row.value) : null;
   }
 
-  async setPreference(key: string, value: any, syncEnabled = false): Promise<void> {
+  async setPreference(key: string, value: unknown, syncEnabled = false): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     const stmt = this.db.prepare(`
@@ -325,7 +335,7 @@ export class DatabaseManager {
       ORDER BY updated_at DESC
     `);
 
-    const rows = stmt.all() as any[];
+    const rows = stmt.all() as PlaylistRow[];
     return rows.map(row => ({
       ...row,
       tracks: JSON.parse(row.tracks),
@@ -356,7 +366,7 @@ export class DatabaseManager {
     if (!this.db) throw new Error('Database not initialized');
 
     let query = 'SELECT * FROM analytics WHERE 1=1';
-    const params: any[] = [];
+    const params: (string | number)[] = [];
 
     if (event) {
       query += ' AND event = ?';
@@ -371,7 +381,7 @@ export class DatabaseManager {
     query += ' ORDER BY timestamp DESC';
 
     const stmt = this.db.prepare(query);
-    const rows = stmt.all(...params) as any[];
+    const rows = stmt.all(...params) as AnalyticsRow[];
 
     return rows.map(row => ({
       ...row,
@@ -408,11 +418,11 @@ export class DatabaseManager {
     if (!this.db) throw new Error('Database not initialized');
 
     const stats = {
-      searches: (this.db.prepare('SELECT COUNT(*) as count FROM searches').get() as any).count,
-      cachedResults: (this.db.prepare('SELECT COUNT(*) as count FROM cached_results').get() as any).count,
-      playlists: (this.db.prepare('SELECT COUNT(*) as count FROM playlists').get() as any).count,
-      analytics: (this.db.prepare('SELECT COUNT(*) as count FROM analytics').get() as any).count,
-      sizeBytes: (this.db.prepare("SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()").get() as any).size
+      searches: (this.db.prepare('SELECT COUNT(*) as count FROM searches').get() as CountRow).count,
+      cachedResults: (this.db.prepare('SELECT COUNT(*) as count FROM cached_results').get() as CountRow).count,
+      playlists: (this.db.prepare('SELECT COUNT(*) as count FROM playlists').get() as CountRow).count,
+      analytics: (this.db.prepare('SELECT COUNT(*) as count FROM analytics').get() as CountRow).count,
+      sizeBytes: (this.db.prepare("SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()").get() as SizeRow).size
     };
 
     return stats;

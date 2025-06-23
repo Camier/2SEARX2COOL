@@ -1,0 +1,67 @@
+{
+  "app": {
+    "theme": "system",
+    "language": "en",
+    "autoStart": false,
+    "minimizeToTray": true,
+    "showInDock": true,
+    "hardwareAcceleration": true
+  },
+  "search": {
+    "defaultEngines": ["google", "bing", "duckduckgo"],
+    "resultsPerPage": 20,
+    "safeSearch": "moderate",
+    "autoSuggest": true,
+    "historyEnabled": true,
+    "cacheResults": true,
+    "cacheExpiry": 3600
+  },
+  "window": {
+    "width": 1200,
+    "height": 800,
+    "minWidth": 800,
+    "minHeight": 600,
+    "rememberSize": true,
+    "rememberPosition": true,
+    "openLinksInBrowser": true
+  },
+  "privacy": {
+    "doNotTrack": true,
+    "clearDataOnExit": false,
+    "blockTrackers": true,
+    "cookiePolicy": "strict"
+  },
+  "performance": {
+    "enableLazyLoading": true,
+    "memoryLimit": 512,
+    "diskCacheSize": 256,
+    "preloadWindows": 2,
+    "enableGPU": true
+  },
+  "updates": {
+    "autoCheck": true,
+    "autoDownload": false,
+    "channel": "stable"
+  },
+  "plugins": {
+    "enabled": true,
+    "autoUpdate": true,
+    "sources": [
+      "https://plugins.2searx2cool.com/registry.json"
+    ]
+  },
+  "shortcuts": {
+    "search": "CmdOrCtrl+K",
+    "newWindow": "CmdOrCtrl+N",
+    "closeWindow": "CmdOrCtrl+W",
+    "settings": "CmdOrCtrl+,",
+    "reload": "CmdOrCtrl+R",
+    "devTools": "CmdOrCtrl+Shift+I"
+  },
+  "advanced": {
+    "experimentalFeatures": false,
+    "debugMode": false,
+    "logLevel": "info",
+    "crashReporting": true
+  }
+}

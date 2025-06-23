@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs/promises';
-import { watch } from 'chokidar';
+import { watch, FSWatcher } from 'chokidar';
 import log from 'electron-log';
 import { 
   Plugin, 
@@ -36,10 +36,11 @@ interface PluginManifest {
 
 export class PluginManager {
   private plugins: Map<string, Plugin> = new Map();
-  private pluginContexts: Map<string, PluginContext> = new Map();
+  private pluginContexts: WeakMap<Plugin, PluginContext> = new WeakMap();
   private pluginPaths: string[] = [];
-  private watcher: any = null;
+  private watcher: FSWatcher | null = null;
   private api: PluginAPI;
+  private ipcListeners: Map<string, Function> = new Map();
 
   constructor(
     private dependencies: {
@@ -155,12 +156,20 @@ export class PluginManager {
         });
       },
       on: (channel, listener) => {
-        ipcMain.on(channel, listener);
+        // Track listeners for cleanup
+        const wrappedListener = (...args: any[]) => listener(...args);
+        this.ipcListeners.set(channel, wrappedListener);
+        ipcMain.on(channel, wrappedListener);
       },
       invoke: (channel, ...args) => {
         return ipcMain.invoke(channel, ...args);
       },
       removeAllListeners: (channel) => {
+        const listener = this.ipcListeners.get(channel);
+        if (listener) {
+          ipcMain.removeListener(channel, listener as any);
+          this.ipcListeners.delete(channel);
+        }
         ipcMain.removeAllListeners(channel);
       }
     };
@@ -239,7 +248,7 @@ export class PluginManager {
 
       // Create context
       const context = this.createPluginContext(plugin);
-      this.pluginContexts.set(manifest.id, context);
+      this.pluginContexts.set(plugin, context);
 
       // Activate plugin if enabled
       if (isEnabled && plugin.main?.activate) {
@@ -296,7 +305,7 @@ export class PluginManager {
     await this.dependencies.configStore.set('plugins', enabledPlugins);
 
     // Activate plugin
-    const context = this.pluginContexts.get(pluginId);
+    const context = this.pluginContexts.get(plugin);
     if (context && plugin.main?.activate) {
       await plugin.main.activate(context);
       log.info(`Enabled plugin: ${pluginId}`);
@@ -342,7 +351,7 @@ export class PluginManager {
 
     // Remove from maps
     this.plugins.delete(pluginId);
-    this.pluginContexts.delete(pluginId);
+    // WeakMap will automatically clean up when plugin is removed
 
     log.info(`Uninstalled plugin: ${pluginId}`);
   }
@@ -384,24 +393,39 @@ export class PluginManager {
   }
 
   async cleanup(): Promise<void> {
+    log.info('Starting plugin manager cleanup');
+    
     // Deactivate all plugins
     for (const [pluginId, plugin] of this.plugins) {
       if (plugin.enabled && plugin.main?.deactivate) {
         try {
           await plugin.main.deactivate();
+          log.debug(`Deactivated plugin: ${pluginId}`);
         } catch (error) {
           log.error(`Error deactivating plugin ${pluginId}:`, error);
         }
       }
     }
 
+    // Remove all IPC listeners
+    const { ipcMain } = require('electron');
+    for (const [channel, listener] of this.ipcListeners) {
+      ipcMain.removeListener(channel, listener as any);
+      log.debug(`Removed IPC listener for channel: ${channel}`);
+    }
+    this.ipcListeners.clear();
+
     // Close watcher
     if (this.watcher) {
       await this.watcher.close();
+      this.watcher = null;
+      log.debug('File watcher closed');
     }
 
     // Clear maps
     this.plugins.clear();
-    this.pluginContexts.clear();
+    // WeakMap doesn't need explicit clearing
+    
+    log.info('Plugin manager cleanup completed');
   }
 }

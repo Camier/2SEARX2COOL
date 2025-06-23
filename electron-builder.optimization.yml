@@ -1,0 +1,140 @@
+# Electron Builder optimization configuration
+# This extends the main electron-builder configuration with production optimizations
+
+# App signing (improves startup time on macOS)
+mac:
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  # Bundle size optimization
+  minimumSystemVersion: "10.13.0"
+  # Remove unnecessary architectures
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+
+win:
+  # NSIS installer optimizations
+  target:
+    - target: nsis
+      arch:
+        - x64
+  # Single installer for all architectures
+  artifactName: "${productName}-${version}.${ext}"
+  # Compression optimization
+  compression: maximum
+  # Remove unused languages
+  deleteAppDataOnUninstall: true
+
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  # Compression
+  compression: xz
+  # Remove documentation
+  synopsis: "Privacy-focused search application"
+  description: "Privacy-focused search application"
+
+# File patterns optimization
+files:
+  # Include only necessary files
+  - "dist/**/*"
+  - "!dist/**/*.map"
+  - "!dist/**/*.LICENSE.txt"
+  - "!dist/**/stats.json"
+  - "!node_modules"
+  - "!src"
+  - "!scripts"
+  - "!.git"
+  - "!.github"
+  - "!test"
+  - "!docs"
+  - "!*.log"
+  - "!*.md"
+  - "!.eslintrc*"
+  - "!.prettierrc*"
+  - "!jest.config.*"
+  - "!tsconfig.*"
+  - "!webpack.*.js"
+
+# Asset optimization
+asarUnpack:
+  # Only unpack native modules
+  - "**/*.node"
+  - "**/better-sqlite3/**"
+  - "**/node-hid/**"
+
+# Compression settings
+compression: maximum
+npmRebuild: true
+nodeGypRebuild: false
+
+# Build optimizations
+buildDependenciesFromSource: false
+nodeVersion: "16.13.0"
+
+# Publishing configuration (for auto-updates)
+publish:
+  - provider: github
+    releaseType: release
+    # Only publish production builds
+    publishAutoUpdate: true
+
+# Optimization flags
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  # Optimize installer size
+  packElevateHelper: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  # Remove unused components
+  deleteAppDataOnUninstall: true
+  # Compression
+  compressor: lzma
+  compressorOptions:
+    level: 9
+    dictionary: 64
+    fastBytes: 273
+
+# macOS specific optimizations
+dmg:
+  writeUpdateInfo: false
+  # Optimize DMG size
+  format: UDZO
+  # Remove unnecessary files
+  contents:
+    - x: 448
+      y: 344
+      type: link
+      path: /Applications
+    - x: 192
+      y: 344
+      type: file
+
+# Code signing timestamps (improves verification speed)
+timestamp: "http://timestamp.digicert.com"
+
+# After build hooks for additional optimization
+afterPack: "./scripts/afterPack.js"
+afterSign: "./scripts/notarize.js"
+
+# Environment variables for optimization
+env:
+  NODE_ENV: "production"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+  
+# Protocols handling
+protocols:
+  - name: "2SEARX2COOL"
+    schemes:
+      - "2searx2cool"

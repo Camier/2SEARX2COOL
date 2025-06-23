@@ -1,0 +1,88 @@
+{
+  "name": "2searx2cool",
+  "version": "0.1.0",
+  "description": "Electron desktop wrapper for SearXNG-Cool - Transform your music search into a native desktop experience",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux",
+    "postinstall": "electron-builder install-app-deps",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Camier/2SEARX2COOL.git"
+  },
+  "keywords": [
+    "electron",
+    "searxng",
+    "music",
+    "search",
+    "desktop",
+    "wrapper"
+  ],
+  "author": "Camier",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Camier/2SEARX2COOL/issues"
+  },
+  "homepage": "https://github.com/Camier/2SEARX2COOL#readme",
+  "devDependencies": {
+    "@electron/rebuild": "^3.6.0",
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.0",
+    "electron-vite": "^2.3.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.3.0"
+  },
+  "dependencies": {
+    "electron-store": "^10.0.0",
+    "electron-updater": "^6.2.0"
+  },
+  "build": {
+    "appId": "com.camier.2searx2cool",
+    "productName": "2SEARX2COOL",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "!node_modules"
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "icon": "build/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "category": "Audio",
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

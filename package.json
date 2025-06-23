@@ -1,21 +1,24 @@
 {
   "name": "2searx2cool",
-  "version": "0.1.0",
-  "description": "Electron desktop wrapper for SearXNG-Cool - Transform your music search into a native desktop experience",
+  "version": "0.2.0",
+  "description": "🎵 Native desktop experience for SearXNG-Cool - 27+ music search engines with offline-first architecture",
   "main": "dist/main/index.js",
   "scripts": {
-    "dev": "electron-vite dev",
-    "build": "electron-vite build",
+    "dev": "cross-env NODE_ENV=development electron-vite dev",
+    "build": "cross-env NODE_ENV=production electron-vite build",
     "preview": "electron-vite preview",
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist:win": "electron-builder --win",
-    "dist:mac": "electron-builder --mac",
-    "dist:linux": "electron-builder --linux",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
     "postinstall": "electron-builder install-app-deps",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "vitest",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -27,7 +30,9 @@
     "music",
     "search",
     "desktop",
-    "wrapper"
+    "offline-first",
+    "plugin-system",
+    "midi"
   ],
   "author": "Camier",
   "license": "AGPL-3.0",
@@ -37,52 +42,132 @@
   "homepage": "https://github.com/Camier/2SEARX2COOL#readme",
   "devDependencies": {
     "@electron/rebuild": "^3.6.0",
+    "@playwright/test": "^1.44.0",
+    "@types/better-sqlite3": "^7.6.10",
     "@types/node": "^20.14.0",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
+    "@vitest/ui": "^1.6.0",
+    "cross-env": "^7.0.3",
     "electron": "^30.0.0",
     "electron-builder": "^24.13.0",
+    "electron-devtools-installer": "^3.2.0",
     "electron-vite": "^2.3.0",
     "eslint": "^8.57.0",
     "prettier": "^3.3.0",
     "typescript": "^5.4.0",
-    "vite": "^5.3.0"
+    "vite": "^5.3.0",
+    "vitest": "^1.6.0"
   },
   "dependencies": {
+    "@electron/remote": "^2.1.2",
+    "axios": "^1.7.2",
+    "better-sqlite3": "^11.0.0",
+    "chokidar": "^3.6.0",
+    "electron-log": "^5.1.5",
     "electron-store": "^10.0.0",
-    "electron-updater": "^6.2.0"
+    "electron-updater": "^6.2.0",
+    "express": "^4.19.2",
+    "node-cache": "^5.1.2",
+    "p-queue": "^8.0.1",
+    "zod": "^3.23.8",
+    "easymidi": "^3.1.0",
+    "naudiodon": "^2.3.8"
+  },
+  "optionalDependencies": {
+    "usb": "^2.13.0"
   },
   "build": {
     "appId": "com.camier.2searx2cool",
     "productName": "2SEARX2COOL",
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "build"
     },
     "files": [
       "dist/**/*",
-      "!node_modules"
+      "!node_modules/**/*",
+      "node_modules/better-sqlite3/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": "resources"
+      }
     ],
     "mac": {
       "category": "public.app-category.music",
-      "icon": "build/icon.icns"
+      "icon": "build/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     },
     "win": {
-      "target": "nsis",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable"
+        }
+      ],
       "icon": "build/icon.ico"
     },
     "linux": {
       "target": [
-        "AppImage",
-        "deb",
-        "rpm"
+        {
+          "target": "AppImage",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64", "arm64"]
+        },
+        {
+          "target": "rpm",
+          "arch": ["x64"]
+        }
       ],
-      "category": "Audio",
-      "icon": "build/icon.png"
+      "category": "Audio;Network;Music",
+      "icon": "build/icon.png",
+      "desktop": {
+        "StartupNotify": "true"
+      }
     },
     "nsis": {
       "oneClick": false,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true
-    }
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "protocols": [
+      {
+        "name": "2searx2cool",
+        "schemes": ["2searx2cool"]
+      }
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Camier",
+        "repo": "2SEARX2COOL"
+      }
+    ]
   }
 }

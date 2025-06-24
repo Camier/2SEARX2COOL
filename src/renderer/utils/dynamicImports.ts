@@ -48,7 +48,9 @@ class DynamicImportManager {
         // Return error component
         return {
           default: (() => {
-            return <div>Failed to load component: {componentName}</div>;
+            const errorMessage = `Failed to load component: ${componentName}`;
+            console.error(errorMessage);
+            throw new Error(errorMessage);
           }) as T
         };
       }

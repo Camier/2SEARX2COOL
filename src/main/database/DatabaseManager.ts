@@ -177,8 +177,13 @@ export class DatabaseManager {
 
     const rows = stmt.all(limit) as SearchRow[];
     return rows.map(row => ({
-      ...row,
-      engines: JSON.parse(row.engines)
+      id: row.id,
+      query: row.query,
+      timestamp: row.timestamp,
+      resultsCount: row.results_count,
+      engines: JSON.parse(row.engines),
+      duration: row.duration,
+      userId: row.user_id || undefined
     }));
   }
 
@@ -194,8 +199,13 @@ export class DatabaseManager {
 
     const rows = stmt.all(`%${query}%`) as SearchRow[];
     return rows.map(row => ({
-      ...row,
-      engines: JSON.parse(row.engines)
+      id: row.id,
+      query: row.query,
+      timestamp: row.timestamp,
+      resultsCount: row.results_count,
+      engines: JSON.parse(row.engines),
+      duration: row.duration,
+      userId: row.user_id || undefined
     }));
   }
 
@@ -220,8 +230,12 @@ export class DatabaseManager {
     updateStmt.run(Date.now(), key);
 
     return {
-      ...row,
-      result: JSON.parse(row.result)
+      id: row.id,
+      searchId: row.search_id,
+      result: JSON.parse(row.result),
+      expiresAt: row.expires_at,
+      accessCount: row.access_count,
+      lastAccessed: row.last_accessed
     };
   }
 
@@ -337,8 +351,12 @@ export class DatabaseManager {
 
     const rows = stmt.all() as PlaylistRow[];
     return rows.map(row => ({
-      ...row,
+      id: row.id,
+      name: row.name,
+      description: row.description || undefined,
       tracks: JSON.parse(row.tracks),
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
       isPublic: row.is_public === 1
     }));
   }
@@ -384,8 +402,12 @@ export class DatabaseManager {
     const rows = stmt.all(...params) as AnalyticsRow[];
 
     return rows.map(row => ({
-      ...row,
-      properties: JSON.parse(row.properties)
+      id: row.id,
+      event: row.event,
+      properties: JSON.parse(row.properties),
+      timestamp: row.timestamp,
+      sessionId: row.session_id,
+      userId: undefined // Not stored in database
     }));
   }
 
@@ -426,5 +448,69 @@ export class DatabaseManager {
     };
 
     return stats;
+  }
+
+  // Additional cache methods for CacheManager
+  async loadCache(): Promise<Array<{region: string, key: string, value: any, ttl: number}>> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const stmt = this.db.prepare(`
+      SELECT * FROM cached_results 
+      WHERE expires_at > ?
+    `);
+    
+    const rows = stmt.all(Date.now()) as CachedResultRow[];
+    return rows.map(row => ({
+      region: 'default',
+      key: row.id,
+      value: JSON.parse(row.result),
+      ttl: row.expires_at - Date.now()
+    }));
+  }
+
+  async getCacheEntry(region: string, key: string): Promise<any> {
+    const result = await this.getCachedResult(key);
+    return result ? result.result : null;
+  }
+
+  async setCacheEntry(region: string, key: string, value: any): Promise<void> {
+    const cacheResult: CachedResult = {
+      id: key,
+      searchId: `${region}_${key}`,
+      result: value, // value is already an object, will be stringified in setCachedResult
+      expiresAt: Date.now() + (60 * 60 * 1000), // 1 hour default
+      accessCount: 0,
+      lastAccessed: Date.now()
+    };
+    await this.setCachedResult(cacheResult);
+  }
+
+  async deleteCacheEntry(region: string, key: string): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const stmt = this.db.prepare(`
+      DELETE FROM cached_results 
+      WHERE key = ?
+    `);
+    
+    stmt.run(key);
+  }
+
+  async clearCacheRegion(region: string): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const stmt = this.db.prepare(`
+      DELETE FROM cached_results 
+      WHERE key LIKE ?
+    `);
+    
+    stmt.run(`${region}_%`);
+  }
+
+  async clearAllCache(): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    const stmt = this.db.prepare('DELETE FROM cached_results');
+    stmt.run();
   }
 }

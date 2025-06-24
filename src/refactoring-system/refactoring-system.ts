@@ -332,7 +332,7 @@ export class RefactoringSystem extends EventEmitter {
       healing: this.healingWorker.getStatus(),
       ...Object.fromEntries(
         this.executionWorkers.map((worker, index) => [
-          \`execution-\${index}\`,
+          `execution-${index}`,
           worker.getStatus()
         ])
       )
@@ -357,10 +357,10 @@ export class RefactoringSystem extends EventEmitter {
     workers.forEach(worker => {
       const status = worker.getStatus();
       if (status.status === 'error') {
-        issues.push(\`Worker \${status.id} is in error state\`);
+        issues.push(`Worker ${status.id} is in error state`);
       }
       if (status.status === 'offline') {
-        issues.push(\`Worker \${status.id} is offline\`);
+        issues.push(`Worker ${status.id} is offline`);
       }
     });
 
@@ -380,7 +380,7 @@ export class RefactoringSystem extends EventEmitter {
    * Graceful shutdown
    */
   async shutdown(): Promise<void> {
-    console.log(`🛑 [REFACTORING-SYSTEM] Shutting down...`);
+    console.log('🛑 [REFACTORING-SYSTEM] Shutting down...');
 
     try {
       // Shutdown all workers
@@ -395,10 +395,10 @@ export class RefactoringSystem extends EventEmitter {
       this.isInitialized = false;
       this.emit('shutdown');
       
-      console.log(`✅ [REFACTORING-SYSTEM] Shutdown complete`);
+      console.log('✅ [REFACTORING-SYSTEM] Shutdown complete');
 
     } catch (error) {
-      console.error(`❌ [REFACTORING-SYSTEM] Shutdown error:`, error);
+      console.error('❌ [REFACTORING-SYSTEM] Shutdown error:', error);
       throw error;
     }
   }

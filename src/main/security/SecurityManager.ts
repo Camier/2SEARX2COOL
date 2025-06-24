@@ -10,7 +10,7 @@
  * - Authentication
  */
 
-import { session, webContents, BrowserWindow, shell } from 'electron';
+import { app, session, webContents, BrowserWindow, shell } from 'electron';
 import { createHash, createCipher, createDecipher, randomBytes } from 'crypto';
 import { URL } from 'url';
 import { EventEmitter } from 'events';
@@ -55,10 +55,23 @@ export class SecurityManager extends EventEmitter {
     this.policy = this.createDefaultPolicy();
     this.encryptionKey = this.generateEncryptionKey();
     
-    this.initializeTrustedDomains();
-    this.setupSecurityHeaders();
-    this.setupContentFiltering();
-    this.setupRequestInterception();
+    // Initialize trusted domains asynchronously
+    this.initializeTrustedDomains().catch(err => {
+      console.error('Failed to initialize trusted domains:', err);
+    });
+    
+    // Delay session-dependent setup until app is ready
+    if (app.isReady()) {
+      this.setupSecurityHeaders();
+      this.setupContentFiltering();
+      this.setupRequestInterception();
+    } else {
+      app.once('ready', () => {
+        this.setupSecurityHeaders();
+        this.setupContentFiltering();
+        this.setupRequestInterception();
+      });
+    }
 
     console.log('🔒 [SECURITY-MANAGER] Initialized with enhanced security policies');
   }
@@ -66,6 +79,10 @@ export class SecurityManager extends EventEmitter {
   /**
    * Initialize Content Security Policy
    */
+  initialize(): void {
+    this.initializeCSP();
+  }
+
   initializeCSP(): void {
     if (!this.policy.csp.enabled) {
       console.log('⚠️ [SECURITY-MANAGER] CSP is disabled');
@@ -428,9 +445,11 @@ export class SecurityManager extends EventEmitter {
   /**
    * Initialize trusted domains from configuration
    */
-  private initializeTrustedDomains(): void {
-    const trustedDomains = configStore.get('security', 'trustedDomains') || [];
-    trustedDomains.forEach(domain => this.trustedDomains.add(domain));
+  private async initializeTrustedDomains(): Promise<void> {
+    // Get allowed origins from preferences or use defaults
+    const preferences = await configStore.get('preferences');
+    const allowedOrigins = this.policy.permissions.allowedOrigins || [];
+    allowedOrigins.forEach(domain => this.trustedDomains.add(domain));
 
     // Add default trusted domains for search engines
     const defaultTrusted = [
@@ -520,7 +539,22 @@ export class SecurityManager extends EventEmitter {
 }
 
 // Create singleton instance
-export const securityManager = new SecurityManager();
+// Export a lazy-initialized singleton
+let _securityManager: SecurityManager | null = null;
+
+export function getSecurityManager(): SecurityManager {
+  if (!_securityManager) {
+    _securityManager = new SecurityManager();
+  }
+  return _securityManager;
+}
+
+// For backward compatibility
+export const securityManager = {
+  get instance() {
+    return getSecurityManager();
+  }
+};
 
 // Export types
 export type { SecurityPolicy, ThreatAssessment };

@@ -5,7 +5,7 @@ import { EventEmitter } from 'events';
 export interface AnalyticsEvent {
   id: string;
   event: string;
-  properties?: Record<string, any>;
+  properties: Record<string, any>;
   timestamp: number;
   sessionId: string;
   userId?: string;
@@ -51,8 +51,9 @@ export class Analytics extends EventEmitter {
     // Check if analytics is enabled
     const { ConfigStore } = await import('../config/ConfigStore');
     const configStore = new ConfigStore();
-    const config = await configStore.get('analytics');
-    this.isEnabled = config?.enabled || false;
+    const preferences = await configStore.get('preferences');
+    // Analytics is disabled by default for privacy
+    this.isEnabled = false;
 
     if (this.isEnabled) {
       log.info('Analytics initialized');
@@ -68,7 +69,7 @@ export class Analytics extends EventEmitter {
     const analyticsEvent: AnalyticsEvent = {
       id: this.generateEventId(),
       event,
-      properties,
+      properties: properties || {},
       timestamp: Date.now(),
       sessionId: this.sessionId
     };

@@ -1,228 +1,186 @@
 /**
- * ConfigStore.ts - Comprehensive Configuration Management
- * 
- * Handles all application configuration with:
- * - Type-safe configuration schema
- * - Validation and migration
- * - Environment variable support
- * - Real-time updates
- * - Configuration export/import
+ * ConfigStore - Centralized configuration management with validation
  */
 
-import { app } from 'electron';
 import Store from 'electron-store';
 import { z } from 'zod';
-import path from 'path';
 import { EventEmitter } from 'events';
+import { app } from 'electron';
+import path from 'path';
+import fs from 'fs/promises';
 
-// Configuration Schema
-const ConfigSchema = z.object({
-  version: z.string().default('0.2.0'),
-  
-  // Application settings
-  app: z.object({
-    autoLaunch: z.boolean().default(false),
-    minimizeToTray: z.boolean().default(true),
-    closeToTray: z.boolean().default(true),
-    startMinimized: z.boolean().default(false),
-    theme: z.enum(['light', 'dark', 'system']).default('system'),
-    language: z.string().default('en'),
-    checkForUpdates: z.boolean().default(true),
-    enableAnalytics: z.boolean().default(false)
-  }).default({}),
-
-  // Search engine configuration
-  search: z.object({
-    defaultEngine: z.string().default('searxng'),
-    engines: z.array(z.object({
-      name: z.string(),
-      url: z.string().url(),
-      enabled: z.boolean().default(true),
-      priority: z.number().min(0).max(100).default(50)
-    })).default([]),
-    resultsPerPage: z.number().min(1).max(100).default(20),
-    timeout: z.number().min(1000).max(30000).default(10000),
-    useProxy: z.boolean().default(false),
-    proxyUrl: z.string().optional()
-  }).default({}),
-
-  // Window settings
-  window: z.object({
-    width: z.number().min(800).default(1200),
-    height: z.number().min(600).default(800),
-    x: z.number().optional(),
-    y: z.number().optional(),
-    maximized: z.boolean().default(false),
-    alwaysOnTop: z.boolean().default(false),
-    opacity: z.number().min(0.1).max(1.0).default(1.0)
-  }).default({}),
-
-  // Plugin system
-  plugins: z.object({
+// Configuration schema using Zod
+const UserPreferencesSchema = z.object({
+  theme: z.enum(['light', 'dark', 'system']).default('system'),
+  language: z.string().default('en'),
+  serverUrl: z.string().url().optional(),
+  serverPort: z.number().min(1024).max(65535).default(8888),
+  globalShortcuts: z.boolean().default(true),
+  autoStart: z.boolean().default(false),
+  minimizeToTray: z.boolean().default(true),
+  audio: z.object({
     enabled: z.boolean().default(true),
-    autoUpdate: z.boolean().default(false),
-    allowUnsigned: z.boolean().default(false),
-    installed: z.array(z.object({
-      id: z.string(),
-      version: z.string(),
-      enabled: z.boolean().default(true),
-      config: z.record(z.any()).default({})
-    })).default([])
-  }).default({}),
-
-  // Security settings
-  security: z.object({
-    enableCSP: z.boolean().default(true),
-    allowInsecureContent: z.boolean().default(false),
-    enableRemoteDebugging: z.boolean().default(false),
-    trustedDomains: z.array(z.string()).default([])
-  }).default({}),
-
-  // Hardware configuration
-  hardware: z.object({
-    midi: z.object({
-      enabled: z.boolean().default(false),
-      inputDevice: z.string().optional(),
-      outputDevice: z.string().optional(),
-      mappings: z.array(z.object({
-        control: z.number(),
-        action: z.string(),
-        parameter: z.string().optional()
-      })).default([])
-    }).default({})
-  }).default({}),
-
-  // Performance settings
-  performance: z.object({
-    enableGPU: z.boolean().default(true),
-    enableBackgroundProcessing: z.boolean().default(true),
-    maxCacheSize: z.number().min(10).max(1000).default(100), // MB
-    preloadResults: z.boolean().default(true),
-    lazyLoading: z.boolean().default(true)
-  }).default({}),
-
-  // Developer settings
-  developer: z.object({
-    enableDevTools: z.boolean().default(false),
-    showPerformanceMetrics: z.boolean().default(false),
-    enableLogging: z.boolean().default(false),
-    logLevel: z.enum(['error', 'warn', 'info', 'debug']).default('info')
+    volume: z.number().min(0).max(100).default(50),
+    midiEnabled: z.boolean().default(false),
+    defaultDevice: z.string().optional()
   }).default({})
 });
 
-export type Config = z.infer<typeof ConfigSchema>;
-export type ConfigPath = keyof Config;
+const WindowStateSchema = z.object({
+  x: z.number().optional(),
+  y: z.number().optional(),
+  width: z.number().min(400).default(1200),
+  height: z.number().min(300).default(800),
+  isMaximized: z.boolean().default(false),
+  isFullScreen: z.boolean().default(false)
+});
+
+const SearchSettingsSchema = z.object({
+  defaultEngine: z.string().default('all'),
+  safeSearch: z.enum(['off', 'moderate', 'strict']).default('moderate'),
+  resultsPerPage: z.number().min(10).max(100).default(20),
+  openInNewTab: z.boolean().default(true),
+  history: z.object({
+    enabled: z.boolean().default(true),
+    maxItems: z.number().min(0).max(10000).default(1000),
+    clearOnExit: z.boolean().default(false)
+  }).default({})
+});
+
+const ConfigSchema = z.object({
+  preferences: UserPreferencesSchema.default({}),
+  windowState: WindowStateSchema.default({}),
+  searchSettings: SearchSettingsSchema.default({}),
+  version: z.string().default('1.0.0')
+});
+
+export type UserPreferences = z.infer<typeof UserPreferencesSchema>;
+export type WindowState = z.infer<typeof WindowStateSchema>;
+export type SearchSettings = z.infer<typeof SearchSettingsSchema>;
+export type ConfigData = z.infer<typeof ConfigSchema>;
 
 export class ConfigStore extends EventEmitter {
-  private store: Store<Config>;
-  private schema = ConfigSchema;
-  private watchers = new Map<string, ((value: any) => void)[]>();
+  private store: Store<ConfigData>;
+  private configPath: string;
+  private backupPath: string;
+  private migrationHandlers: Map<string, (data: any) => any> = new Map();
 
   constructor() {
     super();
-
-    // Initialize electron-store with schema validation
-    this.store = new Store<Config>({
+    
+    // Initialize store without schema validation (we'll use Zod for validation)
+    this.store = new Store<ConfigData>({
       name: '2searx2cool-config',
-      cwd: app.getPath('userData'),
-      fileExtension: 'json',
-      clearInvalidConfig: true,
-      schema: this.convertZodToElectronSchema(ConfigSchema),
-      migrations: this.getMigrations()
+      migrations: {
+        '1.0.0': (store: any) => {
+          // Initial version, no migration needed
+        }
+      },
+      beforeEachMigration: (store: any, context: any) => {
+        console.log(`Migrating config from ${context.fromVersion} to ${context.toVersion}`);
+      }
     });
 
-    // Set defaults if config is empty
-    if (Object.keys(this.store.store).length === 0) {
-      this.resetToDefaults();
-    }
+    this.configPath = (this.store as any).path;
+    this.backupPath = path.join(
+      path.dirname(this.configPath),
+      'config-backup.json'
+    );
 
-    // Validate existing config
-    this.validateAndMigrate();
+    // Watch for changes
+    (this.store as any).onDidChange('preferences', (newValue: any, oldValue: any) => {
+      this.emit('preferences:change', newValue, oldValue);
+    });
 
-    console.log(`📄 [CONFIG-STORE] Initialized at: ${this.store.path}`);
+    (this.store as any).onDidChange('searchSettings', (newValue: any, oldValue: any) => {
+      this.emit('searchSettings:change', newValue, oldValue);
+    });
+
+    // Validate existing config on startup
+    this.validateConfig();
   }
 
   /**
-   * Get configuration value by path
+   * Get configuration value
    */
-  get<T extends keyof Config>(key: T): Config[T];
-  get<T extends keyof Config, K extends keyof Config[T]>(key: T, subKey: K): Config[T][K];
-  get(key: string): any {
+  async get<K extends keyof ConfigData>(key: K): Promise<ConfigData[K]> {
     try {
-      const value = this.store.get(key as any);
+      const value = (this.store as any).get(key);
       return value;
     } catch (error) {
-      console.error(`❌ [CONFIG-STORE] Failed to get config '${key}':`, error);
-      return this.getDefault(key);
+      console.error(`Error getting config key ${key}:`, error);
+      // Return default value on error
+      const defaults = ConfigSchema.parse({});
+      return defaults[key];
     }
   }
 
   /**
-   * Set configuration value by path
+   * Set configuration value
    */
-  set<T extends keyof Config>(key: T, value: Config[T]): void;
-  set<T extends keyof Config, K extends keyof Config[T]>(key: T, subKey: K, value: Config[T][K]): void;
-  set(key: string, ...args: any[]): void {
+  async set<K extends keyof ConfigData>(
+    key: K,
+    value: ConfigData[K]
+  ): Promise<void> {
     try {
-      if (args.length === 1) {
-        // Direct set: set('app', { ... })
-        const [value] = args;
-        this.store.set(key as any, value);
-      } else if (args.length === 2) {
-        // Nested set: set('app', 'theme', 'dark')
-        const [subKey, value] = args;
-        this.store.set(`${key}.${subKey}` as any, value);
-      }
-
-      // Emit change event
-      this.emit('config-changed', { key, value: this.get(key) });
+      // Validate the specific schema
+      const schema = this.getSchemaForKey(key);
+      const validated = schema.parse(value);
       
-      // Trigger watchers
-      this.triggerWatchers(key);
-
-      console.log(`✅ [CONFIG-STORE] Updated '${key}'`);
+      // Create backup before changing
+      await this.createBackup();
+      
+      (this.store as any).set(key, validated);
+      this.emit('config:change', key, validated);
     } catch (error) {
-      console.error(`❌ [CONFIG-STORE] Failed to set config '${key}':`, error);
+      console.error(`Error setting config key ${key}:`, error);
+      throw new Error(`Invalid configuration value for ${key}`);
     }
   }
 
   /**
    * Get all configuration
    */
-  getAll(): Config {
-    return this.store.store as Config;
+  async getAll(): Promise<ConfigData> {
+    return (this.store as any).store;
   }
 
   /**
-   * Reset to default values
+   * Reset configuration to defaults
    */
-  resetToDefaults(): void {
-    const defaults = this.schema.parse({});
-    this.store.clear();
+  async reset(key?: keyof ConfigData): Promise<void> {
+    await this.createBackup();
     
-    Object.entries(defaults).forEach(([key, value]) => {
-      this.store.set(key as any, value);
-    });
-
-    this.emit('config-reset');
-    console.log(`🔄 [CONFIG-STORE] Reset to defaults`);
+    if (key) {
+      const defaults = ConfigSchema.parse({});
+      (this.store as any).set(key, defaults[key]);
+    } else {
+      (this.store as any).clear();
+      const defaults = ConfigSchema.parse({});
+      (this.store as any).set(defaults);
+    }
+    
+    this.emit('config:reset', key);
   }
 
   /**
-   * Validate current configuration
+   * Import configuration from file
    */
-  validate(): { valid: boolean; errors: string[] } {
+  async importConfig(filePath: string): Promise<void> {
     try {
-      this.schema.parse(this.store.store);
-      return { valid: true, errors: [] };
+      const data = await fs.readFile(filePath, 'utf-8');
+      const parsed = JSON.parse(data);
+      
+      // Validate the imported config
+      const validated = ConfigSchema.parse(parsed);
+      
+      await this.createBackup();
+      (this.store as any).set(validated);
+      
+      this.emit('config:imported', filePath);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          valid: false,
-          errors: error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
-        };
-      }
-      return { valid: false, errors: [String(error)] };
+      console.error('Error importing config:', error);
+      throw new Error('Failed to import configuration');
     }
   }
 
@@ -230,179 +188,99 @@ export class ConfigStore extends EventEmitter {
    * Export configuration to file
    */
   async exportConfig(filePath: string): Promise<void> {
-    const fs = await import('fs/promises');
-    const config = this.getAll();
-    
-    await fs.writeFile(filePath, JSON.stringify(config, null, 2), 'utf8');
-    console.log(`📤 [CONFIG-STORE] Exported to: ${filePath}`);
-  }
-
-  /**
-   * Import configuration from file
-   */
-  async importConfig(filePath: string, merge = true): Promise<void> {
-    const fs = await import('fs/promises');
-    
     try {
-      const data = await fs.readFile(filePath, 'utf8');
-      const importedConfig = JSON.parse(data);
-      
-      // Validate imported config
-      const validatedConfig = this.schema.parse(importedConfig);
-      
-      if (merge) {
-        // Merge with existing config
-        const currentConfig = this.getAll();
-        const mergedConfig = { ...currentConfig, ...validatedConfig };
-        this.store.store = mergedConfig;
-      } else {
-        // Replace entire config
-        this.store.store = validatedConfig;
-      }
-
-      this.emit('config-imported', { filePath, merge });
-      console.log(`📥 [CONFIG-STORE] Imported from: ${filePath}`);
-      
+      const config = (this.store as any).store;
+      await fs.writeFile(filePath, JSON.stringify(config, null, 2));
+      this.emit('config:exported', filePath);
     } catch (error) {
-      console.error(`❌ [CONFIG-STORE] Import failed:`, error);
-      throw error;
+      console.error('Error exporting config:', error);
+      throw new Error('Failed to export configuration');
     }
   }
 
   /**
-   * Watch for configuration changes
+   * Create backup of current configuration
    */
-  watch<T extends keyof Config>(key: T, callback: (value: Config[T]) => void): () => void {
-    const keyStr = String(key);
-    
-    if (!this.watchers.has(keyStr)) {
-      this.watchers.set(keyStr, []);
-    }
-    
-    this.watchers.get(keyStr)!.push(callback);
-    
-    // Return unwatch function
-    return () => {
-      const callbacks = this.watchers.get(keyStr);
-      if (callbacks) {
-        const index = callbacks.indexOf(callback);
-        if (index !== -1) {
-          callbacks.splice(index, 1);
-        }
-      }
-    };
-  }
-
-  /**
-   * Get default value for a key
-   */
-  private getDefault(key: string): any {
+  private async createBackup(): Promise<void> {
     try {
-      const defaults = this.schema.parse({});
-      return key.split('.').reduce((obj, k) => obj?.[k], defaults);
-    } catch {
-      return undefined;
+      const config = (this.store as any).store;
+      await fs.writeFile(this.backupPath, JSON.stringify(config, null, 2));
+    } catch (error) {
+      console.error('Error creating config backup:', error);
     }
   }
 
   /**
-   * Trigger watchers for a configuration key
+   * Restore configuration from backup
    */
-  private triggerWatchers(key: string): void {
-    const callbacks = this.watchers.get(key);
-    if (callbacks) {
-      const value = this.get(key);
-      callbacks.forEach(callback => {
-        try {
-          callback(value);
-        } catch (error) {
-          console.error(`❌ [CONFIG-STORE] Watcher callback error:`, error);
-        }
-      });
-    }
-  }
-
-  /**
-   * Validate and migrate existing configuration
-   */
-  private validateAndMigrate(): void {
-    const validation = this.validate();
-    
-    if (!validation.valid) {
-      console.warn(`⚠️ [CONFIG-STORE] Invalid configuration detected:`, validation.errors);
+  async restoreFromBackup(): Promise<void> {
+    try {
+      const data = await fs.readFile(this.backupPath, 'utf-8');
+      const parsed = JSON.parse(data);
+      const validated = ConfigSchema.parse(parsed);
       
-      // Attempt to fix by resetting invalid sections
-      try {
-        const currentConfig = this.store.store;
-        const fixedConfig = this.schema.parse(currentConfig);
-        this.store.store = fixedConfig;
-        console.log(`✅ [CONFIG-STORE] Configuration auto-fixed`);
-      } catch (error) {
-        console.error(`❌ [CONFIG-STORE] Auto-fix failed, resetting to defaults`);
-        this.resetToDefaults();
-      }
+      (this.store as any).set(validated);
+      this.emit('config:restored');
+    } catch (error) {
+      console.error('Error restoring config:', error);
+      throw new Error('Failed to restore configuration from backup');
     }
   }
 
   /**
-   * Convert Zod schema to electron-store compatible schema
+   * Validate current configuration
    */
-  private convertZodToElectronSchema(zodSchema: z.ZodSchema): any {
-    // Simple conversion - electron-store uses JSON Schema
-    // For full compatibility, we'd need a more sophisticated converter
-    return {};
+  private validateConfig(): void {
+    try {
+      const config = (this.store as any).store;
+      ConfigSchema.parse(config);
+    } catch (error) {
+      console.error('Invalid configuration detected:', error);
+      // Reset to defaults if validation fails
+      this.reset();
+    }
   }
 
   /**
-   * Get configuration migrations for version upgrades
+   * Get schema for specific key
    */
-  private getMigrations(): any {
-    return {
-      '>=0.2.0': (store: Store) => {
-        // Migration for v0.2.0
-        if (!store.has('version')) {
-          store.set('version', '0.2.0');
-        }
-      }
-    };
+  private getSchemaForKey(key: keyof ConfigData): z.ZodSchema {
+    switch (key) {
+      case 'preferences':
+        return UserPreferencesSchema;
+      case 'windowState':
+        return WindowStateSchema;
+      case 'searchSettings':
+        return SearchSettingsSchema;
+      case 'version':
+        return z.string();
+      default:
+        return ConfigSchema;
+    }
+  }
+
+
+  /**
+   * Register a migration handler
+   */
+  registerMigration(fromVersion: string, handler: (data: any) => any): void {
+    this.migrationHandlers.set(fromVersion, handler);
   }
 
   /**
    * Get configuration file path
    */
   getConfigPath(): string {
-    return this.store.path;
+    return this.configPath;
   }
 
   /**
-   * Check if configuration has been modified from defaults
+   * Watch for external configuration changes
    */
-  isModified(): boolean {
-    try {
-      const current = this.getAll();
-      const defaults = this.schema.parse({});
-      return JSON.stringify(current) !== JSON.stringify(defaults);
-    } catch {
-      return true;
-    }
-  }
-
-  /**
-   * Get configuration size in bytes
-   */
-  getSize(): number {
-    try {
-      const config = JSON.stringify(this.getAll());
-      return Buffer.byteLength(config, 'utf8');
-    } catch {
-      return 0;
-    }
+  async watchExternalChanges(): Promise<void> {
+    // Implement file watcher if needed
   }
 }
 
-// Create singleton instance
+// Export singleton instance
 export const configStore = new ConfigStore();
-
-// Export types and schema for external use
-export { ConfigSchema };
-export type { Config, ConfigPath };

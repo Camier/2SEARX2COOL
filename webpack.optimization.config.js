@@ -191,7 +191,6 @@ module.exports = {
     // Don't bundle native modules
     'better-sqlite3': 'commonjs better-sqlite3',
     'node-hid': 'commonjs node-hid',
-    'usb': 'commonjs usb',
     'serialport': 'commonjs serialport',
     
     // Electron internals

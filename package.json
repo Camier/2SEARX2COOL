@@ -146,9 +146,6 @@
     "react-router-dom": "^6.23.0",
     "zod": "^3.23.8"
   },
-  "optionalDependencies": {
-    "usb": "^2.13.0"
-  },
   "build": {
     "appId": "com.camier.2searx2cool",
     "productName": "2SEARX2COOL",

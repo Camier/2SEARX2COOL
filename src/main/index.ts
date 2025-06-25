@@ -1,6 +1,7 @@
 import { app, BrowserWindow, shell, ipcMain, protocol, session, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { join } from 'path';
+import { readFileSync } from 'fs';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import log from 'electron-log';
 
@@ -35,6 +36,36 @@ import type { SearchOptimizer } from './search/SearchOptimizer';
 
 // Types
 import { UserPreferences } from '../shared/types';
+
+// WSL Detection and Configuration
+function configureForWSL() {
+  try {
+    const isWSL = readFileSync('/proc/version', 'utf8').toLowerCase().includes('microsoft');
+    if (isWSL) {
+      log.info('WSL environment detected, configuring Electron for compatibility...');
+      
+      // Configure Electron for WSL environment
+      app.commandLine.appendSwitch('--disable-gpu');
+      app.commandLine.appendSwitch('--disable-software-rasterizer');  
+      app.commandLine.appendSwitch('--no-sandbox');
+      app.commandLine.appendSwitch('--disable-dev-shm-usage');
+      app.commandLine.appendSwitch('--disable-web-security');
+      
+      // Disable hardware acceleration for better WSL compatibility
+      app.disableHardwareAcceleration();
+      
+      log.info('WSL configuration applied successfully');
+      return true;
+    }
+  } catch (error) {
+    // Not Linux or can't read /proc/version, continue normally
+    log.debug('Not running in WSL environment');
+  }
+  return false;
+}
+
+// Apply WSL configuration early in app lifecycle
+const isWSL = configureForWSL();
 
 // Initialize logging
 log.transports.file.level = 'info';

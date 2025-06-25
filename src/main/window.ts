@@ -1,23 +1,130 @@
-import { BrowserWindow, shell } from 'electron'
+import { BrowserWindow, shell, screen, nativeTheme } from 'electron'
 import { join } from 'path'
 import { is } from '@electron-toolkit/utils'
+import { ConfigStore } from './config/ConfigStore'
+import log from 'electron-log'
 
-export function createWindow(): BrowserWindow {
-  // Create the browser window
-  const mainWindow = new BrowserWindow({
+interface WindowState {
+  x?: number
+  y?: number
+  width: number
+  height: number
+  isMaximized?: boolean
+  isFullScreen?: boolean
+  displayBounds?: Electron.Rectangle
+}
+
+const configStore = new ConfigStore()
+const windows = new Map<string, BrowserWindow>()
+
+function getWindowState(): WindowState {
+  const defaultState: WindowState = {
     width: 1200,
     height: 800,
+    isMaximized: false,
+    isFullScreen: false
+  }
+
+  try {
+    const savedState = configStore.getSync('windowState') as WindowState | undefined
+    if (!savedState) return defaultState
+
+    // Validate saved bounds are visible on current displays
+    const displays = screen.getAllDisplays()
+    const displayBounds = screen.getDisplayMatching(savedState as Electron.Rectangle).bounds
+
+    // Check if window would be visible
+    const windowWithinDisplay = displays.some(display => {
+      const bounds = display.bounds
+      return (
+        savedState.x! >= bounds.x &&
+        savedState.y! >= bounds.y &&
+        savedState.x! + savedState.width <= bounds.x + bounds.width &&
+        savedState.y! + savedState.height <= bounds.y + bounds.height
+      )
+    })
+
+    if (windowWithinDisplay) {
+      return { ...defaultState, ...savedState, displayBounds }
+    }
+
+    // Window would be off-screen, use default with current display
+    return { ...defaultState, displayBounds }
+  } catch (error) {
+    log.error('Failed to restore window state:', error)
+    return defaultState
+  }
+}
+
+export function createWindow(): BrowserWindow {
+  const windowState = getWindowState()
+  
+  // Create the browser window with enhanced options
+  const mainWindow = new BrowserWindow({
+    x: windowState.x,
+    y: windowState.y,
+    width: windowState.width,
+    height: windowState.height,
+    minWidth: 800,
+    minHeight: 600,
     show: false,
     autoHideMenuBar: true,
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     trafficLightPosition: { x: 15, y: 15 },
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#1e1e1e' : '#ffffff',
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      webSecurity: !is.dev,
+      allowRunningInsecureContent: false
     },
-    icon: join(__dirname, '../../build/icon.png')
+    icon: join(__dirname, '../../build/icon.png'),
+    frame: process.platform !== 'win32', // Frameless on Windows for custom titlebar
+    titleBarOverlay: process.platform === 'win32' ? {
+      color: nativeTheme.shouldUseDarkColors ? '#1e1e1e' : '#ffffff',
+      symbolColor: nativeTheme.shouldUseDarkColors ? '#ffffff' : '#000000',
+      height: 32
+    } : false
+  })
+
+  // Track window state changes
+  let windowStateChangeTimer: NodeJS.Timeout | null = null
+  const updateWindowState = () => {
+    if (windowStateChangeTimer) clearTimeout(windowStateChangeTimer)
+    
+    windowStateChangeTimer = setTimeout(() => {
+      if (!mainWindow.isDestroyed()) {
+        const bounds = mainWindow.getBounds()
+        configStore.set('windowState', {
+          ...bounds,
+          isMaximized: mainWindow.isMaximized(),
+          isFullScreen: mainWindow.isFullScreen()
+        })
+      }
+    }, 1000)
+  }
+
+  mainWindow.on('moved', updateWindowState)
+  mainWindow.on('resized', updateWindowState)
+  mainWindow.on('maximize', updateWindowState)
+  mainWindow.on('unmaximize', updateWindowState)
+  mainWindow.on('enter-full-screen', updateWindowState)
+  mainWindow.on('leave-full-screen', updateWindowState)
+
+  // Restore window state
+  if (windowState.isMaximized) {
+    mainWindow.maximize()
+  }
+  if (windowState.isFullScreen) {
+    mainWindow.setFullScreen(true)
+  }
+
+  // Store window reference
+  windows.set('main', mainWindow)
+  mainWindow.on('closed', () => {
+    windows.delete('main')
   })
 
   // Show window when ready, but also show after timeout as fallback
@@ -136,20 +243,154 @@ export function createWindow(): BrowserWindow {
 }
 
 export function createSearchWindow(query?: string): BrowserWindow {
+  const parent = windows.get('main')
   const searchWindow = new BrowserWindow({
-    width: 800,
+    width: 900,
+    height: 700,
+    minWidth: 600,
+    minHeight: 400,
+    parent: parent,
+    modal: false,
+    show: false,
+    autoHideMenuBar: true,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#1e1e1e' : '#ffffff',
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+      webSecurity: !is.dev
+    },
+    icon: join(__dirname, '../../build/icon.png')
+  })
+
+  // Track this window
+  const windowId = `search-${Date.now()}`
+  windows.set(windowId, searchWindow)
+  searchWindow.on('closed', () => {
+    windows.delete(windowId)
+  })
+
+  // Show when ready
+  searchWindow.once('ready-to-show', () => {
+    searchWindow.show()
+  })
+
+  const serverUrl = process.env.SEARXNG_URL || 'http://localhost:8888'
+  const url = query ? `${serverUrl}/search?q=${encodeURIComponent(query)}` : serverUrl
+  searchWindow.loadURL(url)
+
+  return searchWindow
+}
+
+export function createSettingsWindow(): BrowserWindow {
+  // Check if settings window already exists
+  const existingSettings = windows.get('settings')
+  if (existingSettings && !existingSettings.isDestroyed()) {
+    existingSettings.focus()
+    return existingSettings
+  }
+
+  const parent = windows.get('main')
+  const settingsWindow = new BrowserWindow({
+    width: 700,
     height: 600,
+    minWidth: 500,
+    minHeight: 400,
+    parent: parent,
+    modal: process.platform !== 'darwin',
+    show: false,
+    autoHideMenuBar: true,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#1e1e1e' : '#ffffff',
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
       contextIsolation: true,
       nodeIntegration: false
-    }
+    },
+    icon: join(__dirname, '../../build/icon.png')
   })
 
-  const serverUrl = process.env.SEARXNG_URL || 'http://localhost:5000'
-  const url = query ? `${serverUrl}/search?q=${encodeURIComponent(query)}` : serverUrl
-  searchWindow.loadURL(url)
+  windows.set('settings', settingsWindow)
+  settingsWindow.on('closed', () => {
+    windows.delete('settings')
+  })
 
-  return searchWindow
+  settingsWindow.once('ready-to-show', () => {
+    settingsWindow.show()
+  })
+
+  // Load settings page
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    settingsWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}#/settings`)
+  } else {
+    settingsWindow.loadFile(join(__dirname, '../renderer/index.html'), {
+      hash: '/settings'
+    })
+  }
+
+  return settingsWindow
+}
+
+export function createAboutWindow(): BrowserWindow {
+  const aboutWindow = new BrowserWindow({
+    width: 400,
+    height: 500,
+    resizable: false,
+    minimizable: false,
+    maximizable: false,
+    parent: windows.get('main'),
+    modal: true,
+    show: false,
+    autoHideMenuBar: true,
+    backgroundColor: nativeTheme.shouldUseDarkColors ? '#1e1e1e' : '#ffffff',
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: true,
+      contextIsolation: true,
+      nodeIntegration: false
+    },
+    icon: join(__dirname, '../../build/icon.png')
+  })
+
+  aboutWindow.once('ready-to-show', () => {
+    aboutWindow.show()
+  })
+
+  // Load about page
+  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    aboutWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}#/about`)
+  } else {
+    aboutWindow.loadFile(join(__dirname, '../renderer/index.html'), {
+      hash: '/about'
+    })
+  }
+
+  return aboutWindow
+}
+
+export function getAllWindows(): BrowserWindow[] {
+  return Array.from(windows.values()).filter(win => !win.isDestroyed())
+}
+
+export function getWindow(id: string): BrowserWindow | undefined {
+  return windows.get(id)
+}
+
+export function focusMainWindow(): void {
+  const mainWindow = windows.get('main')
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore()
+    }
+    mainWindow.focus()
+  }
+}
+
+export function closeAllWindows(): void {
+  for (const [id, window] of windows) {
+    if (!window.isDestroyed() && id !== 'main') {
+      window.close()
+    }
+  }
 }

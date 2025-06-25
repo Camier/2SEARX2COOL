@@ -10,6 +10,7 @@ import { setupTray } from './tray';
 import { setupGlobalShortcuts } from './shortcuts';
 import { SecurityManager } from './security/SecurityManager';
 import { ConfigStore } from './config/ConfigStore';
+import { UnifiedConfigManager } from './config/UnifiedConfigManager';
 import { setupIPC } from './ipc';
 import { cleanupIPC } from './ipc/cleanup';
 import { resourceManager } from './utils/ResourceManager';
@@ -56,6 +57,7 @@ let cacheManager: CacheManager;
 let hardwareManager: HardwareManager;
 let securityManager: SecurityManager;
 let configStore: ConfigStore;
+let unifiedConfigManager: UnifiedConfigManager;
 
 // Handle protocol for deep linking
 app.setAsDefaultProtocolClient('2searx2cool');
@@ -115,6 +117,14 @@ async function initializeSystems() {
     // Initialize configuration
     startupPerformance.markStart('configStore');
     configStore = new ConfigStore();
+    unifiedConfigManager = new UnifiedConfigManager();
+    
+    // Wait for unified config to initialize
+    await new Promise(resolve => {
+      unifiedConfigManager.once('config:loaded', resolve);
+      setTimeout(resolve, 5000); // Timeout after 5 seconds
+    });
+    
     const config = await configStore.get<UserPreferences>('preferences');
     startupPerformance.markEnd('configStore');
     
@@ -152,6 +162,7 @@ async function initializeSystems() {
       cacheManager,
       hardwareManager: hardwareManager || null,
       configStore,
+      unifiedConfigManager,
       lazyLoader // Pass lazy loader for on-demand loading
     });
     
@@ -344,9 +355,9 @@ app.whenReady().then(async () => {
   // Load saved preferences
   const preferences = await configStore.get<UserPreferences>('preferences');
 
-  // Setup system tray
+  // Setup system tray with server manager reference
   startupPerformance.markStart('traySetup');
-  setupTray();
+  setupTray(serverManager);
   startupPerformance.markEnd('traySetup');
 
   // Setup global shortcuts if enabled
@@ -356,10 +367,16 @@ app.whenReady().then(async () => {
     startupPerformance.markEnd('shortcutsSetup');
   }
 
-  // Start the SearXNG server based on deployment mode
-  const deploymentMode = process.env.DEPLOYMENT_MODE || preferences?.serverUrl ? 'external' : 'bundled';
-  if (deploymentMode === 'bundled' || deploymentMode === 'hybrid') {
+  // Start the SearXNG server based on unified configuration mode
+  const appMode = unifiedConfigManager.getMode();
+  if (appMode === 'hybrid' || appMode === 'desktop') {
     startupPerformance.markStart('serverStart');
+    // Get server configuration from unified config
+    const serverConfig = unifiedConfigManager.get('service.searxng');
+    const orchestratorConfig = unifiedConfigManager.get('service.orchestrator');
+    
+    log.info(`Starting services - SearXNG: ${serverConfig.port}, Orchestrator: ${orchestratorConfig.port}`);
+    
     await serverManager.start();
     startupPerformance.markEnd('serverStart');
   }

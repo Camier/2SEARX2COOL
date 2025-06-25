@@ -1,270 +1,73 @@
+import React, { useState } from 'react';
+import { EnhancedSearchInterface } from './components/EnhancedSearchInterface';
+import { MusicPlayer } from './components/MusicPlayer';
+import { QueueManager } from './components/QueueManager';
+
 /**
- * App.tsx - Main React Application Component
+ * Week 4 Day 1: Main Application Component
  * 
- * Primary renderer interface for 2SEARX2COOL desktop application
- * Features:
- * - Integrated search interface
- * - Server status management
- * - Plugin system integration
- * - Hardware controls support
- * - Real-time updates
+ * Integrates the enhanced search interface with all
+ * Week 3 features into the main application.
  */
-
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { SearchInterface } from './components/SearchInterface';
-import { ServerStatus } from './components/ServerStatus';
-import { PluginManager } from './components/PluginManager';
-import { HardwareControls } from './components/HardwareControls';
-import { SettingsPanel } from './components/SettingsPanel';
-import { LoadingSpinner } from './components/LoadingSpinner';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { NotificationSystem } from './components/NotificationSystem';
-import { useServerStatus } from './hooks/useServerStatus';
-import { useHardware } from './hooks/useHardware';
-import { useSettings } from './hooks/useSettings';
-import { AppProvider } from './context/AppContext';
-
-interface AppState {
-  initialized: boolean;
-  currentView: 'search' | 'settings' | 'plugins' | 'hardware';
-  sidebarCollapsed: boolean;
-  theme: 'light' | 'dark' | 'system';
-}
-
-const App: React.FC = () => {
-  const [state, setState] = useState<AppState>({
-    initialized: false,
-    currentView: 'search',
-    sidebarCollapsed: false,
-    theme: 'system'
-  });
-
-  const { serverStatus, connectToServer, disconnectFromServer } = useServerStatus();
-  const { hardwareStatus, sendHardwareCommand } = useHardware();
-  const { settings, updateSetting } = useSettings();
-  const appRef = useRef<HTMLDivElement>(null);
-
-  // Initialize application
-  useEffect(() => {
-    initializeApp();
-  }, []);
-
-  // Handle hardware events
-  useEffect(() => {
-    if (hardwareStatus.midiEnabled) {
-      const handleHardwareAction = (action: any) => {
-        handleHardwareCommand(action);
-      };
-
-      window.api?.hardware?.onAction?.(handleHardwareAction);
-      
-      return () => {
-        window.api?.hardware?.offAction?.(handleHardwareAction);
-      };
-    }
-  }, [hardwareStatus.midiEnabled]);
-
-  // Apply theme changes
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', state.theme);
-  }, [state.theme]);
-
-  const initializeApp = async () => {
-    try {
-      console.log('🚀 [APP] Initializing 2SEARX2COOL...');
-
-      // Load initial settings
-      const initialSettings = await window.api.config.getAll();
-      setState(prev => ({
-        ...prev,
-        theme: initialSettings.app?.theme || 'system'
-      }));
-
-      // Connect to server
-      await connectToServer();
-
-      setState(prev => ({ ...prev, initialized: true }));
-      console.log('✅ [APP] Application initialized successfully');
-
-    } catch (error) {
-      console.error('❌ [APP] Initialization failed:', error);
-      // Show error notification but allow partial functionality
-      setState(prev => ({ ...prev, initialized: true }));
-    }
-  };
-
-  const handleViewChange = useCallback((view: AppState['currentView']) => {
-    setState(prev => ({ ...prev, currentView: view }));
-  }, []);
-
-  const handleSidebarToggle = useCallback(() => {
-    setState(prev => ({ ...prev, sidebarCollapsed: !prev.sidebarCollapsed }));
-  }, []);
-
-  const handleThemeChange = useCallback((theme: AppState['theme']) => {
-    setState(prev => ({ ...prev, theme }));
-    updateSetting('app.theme', theme);
-  }, [updateSetting]);
-
-  const handleHardwareCommand = useCallback((action: any) => {
-    switch (action.action) {
-      case 'search':
-        handleViewChange('search');
-        break;
-      case 'next-result':
-        // Implement navigation
-        window.api.search?.nextResult?.();
-        break;
-      case 'previous-result':
-        window.api.search?.previousResult?.();
-        break;
-      case 'toggle-play':
-        window.api.player?.toggle?.();
-        break;
-      case 'volume':
-        window.api.player?.setVolume?.(action.value);
-        break;
-      default:
-        console.log('🎛️ [APP] Unhandled hardware action:', action);
-    }
-  }, [handleViewChange]);
-
-  const renderMainContent = () => {
-    switch (state.currentView) {
-      case 'search':
-        return (
-          <SearchInterface
-            serverStatus={serverStatus}
-            onServerConnect={connectToServer}
-            onServerDisconnect={disconnectFromServer}
-          />
-        );
-      case 'settings':
-        return (
-          <SettingsPanel
-            settings={settings}
-            onSettingChange={updateSetting}
-            onThemeChange={handleThemeChange}
-            currentTheme={state.theme}
-          />
-        );
-      case 'plugins':
-        return <PluginManager />;
-      case 'hardware':
-        return (
-          <HardwareControls
-            status={hardwareStatus}
-            onCommand={sendHardwareCommand}
-          />
-        );
-      default:
-        return <SearchInterface serverStatus={serverStatus} />;
-    }
-  };
-
-  if (!state.initialized) {
-    return (
-      <div className="app-loading">
-        <LoadingSpinner size="large" />
-        <h2>Starting 2SEARX2COOL...</h2>
-        <p>Initializing components...</p>
-      </div>
-    );
-  }
-
+function App() {
+  const [isQueueVisible, setIsQueueVisible] = useState(false);
+  
   return (
-    <AppProvider>
-      <ErrorBoundary>
-        <div 
-          ref={appRef}
-          className={`app ${state.sidebarCollapsed ? 'sidebar-collapsed' : ''}`}
-          data-theme={state.theme}
-        >
-          {/* Header */}
-          <header className="app-header">
-            <div className="header-left">
-              <button
-                className="sidebar-toggle"
-                onClick={handleSidebarToggle}
-                aria-label="Toggle sidebar"
-              >
-                <span className="hamburger-icon">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </span>
-              </button>
-              
-              <h1 className="app-title">2SEARX2COOL</h1>
-              
-              <ServerStatus 
-                status={serverStatus} 
-                onConnect={connectToServer}
-                onDisconnect={disconnectFromServer}
-              />
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex-1 flex flex-col">
+        <div className="container mx-auto px-4 py-8 flex-1">
+          <header className="mb-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">
+                2SEARX2COOL Music Library
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Your personal music library with intelligent search and scoring
+              </p>
             </div>
-
-            <div className="header-right">
-              <div className="header-controls">
-                <button
-                  className={`control-btn ${state.currentView === 'search' ? 'active' : ''}`}
-                  onClick={() => handleViewChange('search')}
-                  title="Search"
-                >
-                  🔍
-                </button>
-                
-                <button
-                  className={`control-btn ${state.currentView === 'plugins' ? 'active' : ''}`}
-                  onClick={() => handleViewChange('plugins')}
-                  title="Plugins"
-                >
-                  🧩
-                </button>
-                
-                {hardwareStatus.midiEnabled && (
-                  <button
-                    className={`control-btn ${state.currentView === 'hardware' ? 'active' : ''}`}
-                    onClick={() => handleViewChange('hardware')}
-                    title="Hardware Controls"
-                  >
-                    🎛️
-                  </button>
-                )}
-                
-                <button
-                  className={`control-btn ${state.currentView === 'settings' ? 'active' : ''}`}
-                  onClick={() => handleViewChange('settings')}
-                  title="Settings"
-                >
-                  ⚙️
-                </button>
+            
+            {/* Queue toggle button */}
+            <button
+              onClick={() => setIsQueueVisible(!isQueueVisible)}
+              className={`px-4 py-2 rounded-lg transition-colors ${
+                isQueueVisible 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-50'
+              } border border-gray-300 shadow-sm`}
+              title="Toggle queue"
+            >
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+                Queue
               </div>
-            </div>
+            </button>
           </header>
-
-          {/* Main Content */}
-          <main className="app-main">
-            {renderMainContent()}
+          
+          <main className="flex-1 pb-32">
+            <EnhancedSearchInterface />
           </main>
-
-          {/* Notification System */}
-          <NotificationSystem />
-
-          {/* Development Info */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="dev-info">
-              <small>
-                Server: {serverStatus.running ? '🟢' : '🔴'} | 
-                MIDI: {hardwareStatus.midiEnabled ? '🎹' : '❌'} |
-                View: {state.currentView}
-              </small>
-            </div>
-          )}
         </div>
-      </ErrorBoundary>
-    </AppProvider>
+        
+        {/* Music Player - Fixed at bottom */}
+        <div className="fixed bottom-0 left-0 right-0 z-40">
+          <MusicPlayer />
+        </div>
+      </div>
+      
+      {/* Queue Manager - Slide-out panel */}
+      <QueueManager 
+        isVisible={isQueueVisible}
+        onClose={() => setIsQueueVisible(false)}
+      />
+      
+      {/* Footer */}
+      <footer className="py-4 border-t border-gray-200 text-center text-sm text-gray-500 bg-white">
+        <p>Powered by ACRCloud, SearXNG, and your listening habits</p>
+      </footer>
+    </div>
   );
-};
+}
 
 export default App;

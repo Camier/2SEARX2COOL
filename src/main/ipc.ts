@@ -7,7 +7,11 @@ import type { CacheManager } from './cache/CacheManager';
 import type { HardwareManager } from './hardware/HardwareManager';
 import type { PluginManager } from './plugins/PluginManager';
 import type { ConfigStore } from './config/ConfigStore';
+import type { UnifiedConfigManager } from './config/UnifiedConfigManager';
 import type { LazyLoader } from './utils/LazyLoader';
+import { setupConfigIPC } from './ipc/config-handlers';
+import { setupNotificationHandlers } from './ipc/notifications';
+import { setupFileAssociationHandlers } from './ipc/fileAssociations';
 
 interface IPCDependencies {
   pluginManager: PluginManager | null;
@@ -16,6 +20,7 @@ interface IPCDependencies {
   cacheManager: CacheManager;
   hardwareManager: HardwareManager | null;
   configStore: ConfigStore;
+  unifiedConfigManager: UnifiedConfigManager;
   lazyLoader?: LazyLoader;
 }
 
@@ -315,6 +320,15 @@ export function setupIPC(dependencies: IPCDependencies): void {
     return { canceled: true, filePaths: [] };
   });
 
+  // Setup configuration IPC handlers
+  setupConfigIPC();
+  
+  // Setup notification handlers
+  setupNotificationHandlers();
+  
+  // Setup file association handlers
+  setupFileAssociationHandlers();
+  
   log.info('IPC handlers set up successfully');
 }
 

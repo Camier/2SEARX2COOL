@@ -50,6 +50,12 @@ function configureForWSL() {
       app.commandLine.appendSwitch('--no-sandbox');
       app.commandLine.appendSwitch('--disable-dev-shm-usage');
       app.commandLine.appendSwitch('--disable-web-security');
+      app.commandLine.appendSwitch('--disable-gpu-sandbox');
+      app.commandLine.appendSwitch('--disable-gpu-process-crash-limit');
+      app.commandLine.appendSwitch('--disable-renderer-backgrounding');
+      app.commandLine.appendSwitch('--disable-background-timer-throttling');
+      app.commandLine.appendSwitch('--disable-backgrounding-occluded-windows');
+      app.commandLine.appendSwitch('--disable-features=VizDisplayCompositor');
       
       // Disable hardware acceleration for better WSL compatibility
       app.disableHardwareAcceleration();

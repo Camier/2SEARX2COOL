@@ -1,0 +1,98 @@
+/* Library Sorter Styles */
+
+.library-sorter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--color-bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+}
+
+.sort-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  margin: 0;
+}
+
+.sort-select {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 120px;
+  transition: all 0.2s ease;
+}
+
+.sort-select:hover {
+  border-color: var(--color-accent);
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px var(--color-accent-subtle);
+}
+
+.sort-direction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+}
+
+.sort-direction:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.sort-direction.asc {
+  color: var(--color-accent);
+}
+
+.sort-direction.desc {
+  color: var(--color-accent);
+  transform: rotate(180deg);
+}
+
+.sort-direction:active {
+  transform: scale(0.95);
+}
+
+.sort-direction.desc:active {
+  transform: rotate(180deg) scale(0.95);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .library-sorter {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .sort-label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+  
+  .sort-select {
+    flex: 1;
+    min-width: 100px;
+  }
+}

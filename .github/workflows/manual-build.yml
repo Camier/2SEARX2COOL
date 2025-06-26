@@ -1,0 +1,115 @@
+name: Manual Windows Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+        - test
+        - release
+      upload_artifacts:
+        description: 'Upload build artifacts'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        submodules: false  # Skip submodules for faster checkout
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+    
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      shell: bash
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+    
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Rebuild native modules for Windows
+      run: npm run postinstall
+    
+    - name: Build application
+      run: npm run build
+      
+    - name: List native modules (debugging)
+      run: |
+        echo "=== Checking native modules ==="
+        dir node_modules\better-sqlite3\lib\binding\
+        dir node_modules\@julusian\midi\
+      shell: cmd
+    
+    - name: Build Windows distributables
+      run: npm run dist:win
+      env:
+        CSC_IDENTITY_AUTO_DISCOVERY: false
+    
+    - name: List release directory
+      run: |
+        echo "=== Release directory contents ==="
+        dir release\
+      shell: cmd
+    
+    - name: Upload Windows installer
+      if: ${{ inputs.upload_artifacts }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-installer-x64
+        path: |
+          release/*.exe
+          release/*-Setup-*.exe
+        if-no-files-found: error
+    
+    - name: Upload Windows portable
+      if: ${{ inputs.upload_artifacts }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-portable-x64
+        path: |
+          release/*.zip
+          release/*portable*.exe
+        if-no-files-found: warn
+    
+    - name: Upload unpacked build (for testing)
+      if: ${{ inputs.build_type == 'test' && inputs.upload_artifacts }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows-unpacked
+        path: release/win-unpacked/
+        if-no-files-found: error
+    
+    - name: Build summary
+      run: |
+        echo "### Build Summary 📊" >> $env:GITHUB_STEP_SUMMARY
+        echo "" >> $env:GITHUB_STEP_SUMMARY
+        echo "**Build Type:** ${{ inputs.build_type }}" >> $env:GITHUB_STEP_SUMMARY
+        echo "**Node Version:** $(node --version)" >> $env:GITHUB_STEP_SUMMARY
+        echo "**NPM Version:** $(npm --version)" >> $env:GITHUB_STEP_SUMMARY
+        echo "" >> $env:GITHUB_STEP_SUMMARY
+        echo "#### Release Contents:" >> $env:GITHUB_STEP_SUMMARY
+        echo '```' >> $env:GITHUB_STEP_SUMMARY
+        dir release\ >> $env:GITHUB_STEP_SUMMARY
+        echo '```' >> $env:GITHUB_STEP_SUMMARY

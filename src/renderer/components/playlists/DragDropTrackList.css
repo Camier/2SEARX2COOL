@@ -1,0 +1,593 @@
+/* Drag Drop Track List Styles */
+
+.drag-drop-track-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Hidden drag image */
+.drag-image {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+  padding: 8px 12px;
+  background: var(--color-accent);
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Track list */
+.track-list {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.track-list:focus {
+  outline: none;
+}
+
+/* Empty state */
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-list p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Track item */
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  background: var(--color-bg);
+}
+
+.track-item:hover {
+  background: var(--color-bg-hover);
+}
+
+.track-item:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.track-item.selected {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+}
+
+.track-item.being-dragged {
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+.track-item.drag-over {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Drag handle */
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  cursor: grab;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.track-item:hover .drag-handle {
+  opacity: 1;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Track index */
+.track-index {
+  width: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Selection checkbox */
+.track-selection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.track-selection input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+/* Cover art */
+.track-cover {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.track-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-placeholder {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+}
+
+/* Track info */
+.track-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.track-primary {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track-artist {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track-secondary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+}
+
+.track-album,
+.track-year,
+.track-genre {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-album {
+  max-width: 150px;
+}
+
+.track-year {
+  min-width: 40px;
+}
+
+.track-genre {
+  max-width: 100px;
+}
+
+/* Track metadata */
+.track-metadata {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.track-duration {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.track-rating {
+  font-size: 12px;
+  color: var(--color-accent);
+}
+
+.track-plays {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+/* Track controls */
+.track-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.track-item:hover .track-controls {
+  opacity: 1;
+}
+
+.play-button,
+.remove-button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.play-button {
+  background: var(--color-accent);
+  color: white;
+}
+
+.play-button:hover {
+  background: var(--color-accent-dark, var(--color-accent));
+  transform: scale(1.05);
+}
+
+.remove-button {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  font-size: 16px;
+}
+
+.remove-button:hover {
+  background: var(--color-error);
+  color: white;
+  border-color: var(--color-error);
+  transform: scale(1.05);
+}
+
+/* Drop indicator */
+.drop-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-accent);
+  z-index: 10;
+}
+
+/* Selection info */
+.selection-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--color-accent-subtle);
+  border-top: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  font-size: 14px;
+}
+
+.clear-selection {
+  padding: 4px 12px;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  color: var(--color-accent);
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-selection:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* Drag overlay */
+.drag-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drag-preview {
+  background: var(--color-accent);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: dragPulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes dragPulse {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .track-item {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .track-cover {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cover-placeholder {
+    font-size: 14px;
+  }
+
+  .track-secondary {
+    display: none;
+  }
+
+  .track-metadata {
+    min-width: 60px;
+  }
+
+  .track-controls {
+    opacity: 1; /* Always show on mobile */
+  }
+
+  .drag-handle {
+    opacity: 1; /* Always show on mobile */
+  }
+
+  .selection-info {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .track-item {
+    flex-wrap: wrap;
+  }
+
+  .track-info {
+    flex-basis: 100%;
+    order: 2;
+  }
+
+  .track-metadata {
+    order: 3;
+    align-items: flex-start;
+  }
+
+  .track-controls {
+    order: 4;
+    justify-content: flex-end;
+  }
+
+  .track-index {
+    order: 1;
+    width: auto;
+  }
+
+  .track-selection {
+    order: 1;
+  }
+
+  .track-cover {
+    order: 1;
+  }
+
+  .drag-handle {
+    order: 1;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .track-item {
+    transition: none;
+  }
+
+  .track-item.drag-over {
+    transform: none;
+  }
+
+  .track-item.being-dragged {
+    transform: none;
+  }
+
+  .drag-preview {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .track-item {
+    border-bottom-width: 2px;
+  }
+
+  .track-item.selected,
+  .track-item.drag-over {
+    border-width: 3px;
+  }
+
+  .drop-indicator {
+    height: 4px;
+  }
+}
+
+/* Dark mode specific adjustments */
+@media (prefers-color-scheme: dark) {
+  .drag-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .drag-preview {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Focus management for keyboard navigation */
+.track-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+  box-shadow: 0 0 0 4px var(--color-accent-subtle);
+}
+
+/* Custom scrollbar for track list */
+.track-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.track-list::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+.track-list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.track-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Smooth scrolling */
+.track-list {
+  scroll-behavior: smooth;
+}
+
+/* Virtual scrolling support */
+.track-list.virtual {
+  overflow: hidden;
+}
+
+.track-list.virtual .track-item {
+  position: absolute;
+  width: 100%;
+}
+
+/* Selection styles for different states */
+.track-item.selected:hover {
+  background: var(--color-accent-subtle);
+}
+
+.track-item.selected:focus {
+  outline-color: var(--color-accent);
+}
+
+/* Animation for adding/removing tracks */
+.track-item.entering {
+  animation: trackEnter 0.3s ease-out;
+}
+
+.track-item.leaving {
+  animation: trackLeave 0.3s ease-in;
+}
+
+@keyframes trackEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes trackLeave {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 72px;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}

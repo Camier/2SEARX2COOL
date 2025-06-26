@@ -23,12 +23,12 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: false  # Skip submodules for faster checkout
     
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 18
         cache: 'npm'
@@ -39,7 +39,7 @@ jobs:
       run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
     
     - name: Cache node modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.npm-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -75,7 +75,7 @@ jobs:
     
     - name: Upload Windows installer
       if: ${{ inputs.upload_artifacts }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-installer-x64
         path: |
@@ -85,7 +85,7 @@ jobs:
     
     - name: Upload Windows portable
       if: ${{ inputs.upload_artifacts }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-portable-x64
         path: |
@@ -95,7 +95,7 @@ jobs:
     
     - name: Upload unpacked build (for testing)
       if: ${{ inputs.build_type == 'test' && inputs.upload_artifacts }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-unpacked
         path: release/win-unpacked/

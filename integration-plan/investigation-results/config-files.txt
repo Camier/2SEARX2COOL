@@ -1,0 +1,14 @@
+YAML Files:
+/home/mik/SEARXNG/2SEARX2COOL/config/searxng-settings-noredis.yml
+/home/mik/SEARXNG/2SEARX2COOL/config/searxng-settings.yml
+/home/mik/SEARXNG/2SEARX2COOL/config/music_engines.yml
+/home/mik/SEARXNG/2SEARX2COOL/config/orchestrator.yml
+
+JSON Files:
+/home/mik/SEARXNG/2SEARX2COOL/2SEARX2COOL-knowledge.json
+/home/mik/SEARXNG/2SEARX2COOL/docs/music-engines/analyzed_sources.json
+
+Environment Files:
+/home/mik/SEARXNG/2SEARX2COOL/.env.example
+
+INI Files:

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html class="{{ rtl_dir }}" lang="{{ locale_rfc5646 }}" {% if rtl %}dir="rtl"{% endif %}>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="ALFREDISGONE - Terminal Memorial Search Engine for Alfred the Cat" />
+    <meta name="keywords" content="{{ keywords }}" />
+    <meta name="generator" content="searxng/{{ searx_version }}">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noarchive">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{% block title %}{% endblock %}{{ instance_name }}</title>
+    
+    {% if opensearch_url %}
+    <link rel="search" type="application/opensearchdescription+xml" title="{{ instance_name }}" href="{{ opensearch_url }}"/>
+    {% endif %}
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='themes/deadcat/css/main.css') }}" type="text/css" />
+    
+    {% block styles %}{% endblock %}
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-rain"></canvas>
+    
+    <!-- Mini Floating Dead Cat -->
+    <pre class="mini-dead-cat" aria-hidden="true"> /\_/\
+( x.x )
+ > ^ <</pre>
+    
+    <!-- Exit Code Easter Egg -->
+    <div class="exit-code">[EXIT_CODE: 9_LIVES_EXCEEDED]</div>
+    
+    <!-- Skip to content -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+    
+    {% block content %}
+    {% endblock %}
+    
+    <script src="{{ url_for('static', filename='themes/deadcat/js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

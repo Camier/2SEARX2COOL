@@ -1,0 +1,373 @@
+/**
+ * Convivial Theme for Searxng
+ * A warm, friendly theme that adapts to moods and seasons
+ */
+
+:root {
+  /* Base colors - Default (Spring) */
+  --convivial-primary: #7fb069;        /* Sage green */
+  --convivial-secondary: #e6aa68;      /* Warm amber */
+  --convivial-accent: #ca3c25;         /* Terracotta */
+  --convivial-background: #fefae0;     /* Cream */
+  --convivial-surface: #f4f3ee;        /* Light parchment */
+  --convivial-text: #3a3a3a;           /* Soft black */
+  --convivial-text-muted: #6b6b6b;     /* Muted gray */
+  
+  /* Semantic colors */
+  --convivial-discovery: #dda15e;      /* Discovery orange */
+  --convivial-collision: #bc6c25;      /* Collision brown */
+  --convivial-gift: #e56b6f;           /* Gift coral */
+  --convivial-presence: #b8c0ff;       /* Presence periwinkle */
+  
+  /* Spacing and typography */
+  --convivial-radius: 12px;
+  --convivial-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --convivial-font-serif: 'Crimson Text', Georgia, serif;
+  --convivial-font-sans: 'Inter', -apple-system, sans-serif;
+  
+  /* Animation */
+  --convivial-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Seasonal theme variations */
+[data-theme="summer"] {
+  --convivial-primary: #4a7c59;        /* Forest green */
+  --convivial-secondary: #ffb700;      /* Sunflower */
+  --convivial-accent: #e63946;         /* Watermelon */
+  --convivial-background: #f8f9fa;     /* Cool white */
+  --convivial-surface: #e9ecef;        /* Light gray */
+}
+
+[data-theme="autumn"] {
+  --convivial-primary: #bc4749;        /* Burgundy */
+  --convivial-secondary: #f2cc8f;      /* Harvest gold */
+  --convivial-accent: #a7c957;         /* Olive */
+  --convivial-background: #f7ede2;     /* Warm beige */
+  --convivial-surface: #f5cac3;        /* Dusty rose */
+}
+
+[data-theme="winter"] {
+  --convivial-primary: #264653;        /* Deep teal */
+  --convivial-secondary: #2a9d8f;      /* Turquoise */
+  --convivial-accent: #e76f51;         /* Burnt sienna */
+  --convivial-background: #f1faee;     /* Snow */
+  --convivial-surface: #a8dadc;        /* Ice blue */
+}
+
+/* Search mood overlays */
+[data-mood="late-night"] {
+  --convivial-background: #1a1a2e;
+  --convivial-surface: #16213e;
+  --convivial-text: #eaeaea;
+  --convivial-primary: #e94560;
+}
+
+[data-mood="botanical"] {
+  --convivial-primary: #52734d;
+  --convivial-secondary: #91c788;
+  --convivial-accent: #ddffbc;
+}
+
+[data-mood="vinyl-digging"] {
+  --convivial-background: #2b2b2b;
+  --convivial-surface: #3a3a3a;
+  --convivial-text: #fafafa;
+  --convivial-accent: #ff6b6b;
+}
+
+/* Main layout styling */
+body {
+  background-color: var(--convivial-background);
+  color: var(--convivial-text);
+  font-family: var(--convivial-font-sans);
+  transition: var(--convivial-transition);
+}
+
+/* Search container with presence bubbles */
+.search-container {
+  position: relative;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.presence-bubbles {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.presence-bubble {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--convivial-presence);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  animation: gentle-bob 3s ease-in-out infinite;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.presence-bubble:hover {
+  transform: scale(1.1);
+}
+
+.presence-bubble.searching {
+  box-shadow: 0 0 0 0 rgba(184, 192, 255, 0.7);
+  animation: pulse 2s infinite;
+}
+
+/* Search input with mood indicator */
+.search-wrapper {
+  background: var(--convivial-surface);
+  border-radius: var(--convivial-radius);
+  padding: 1rem;
+  box-shadow: var(--convivial-shadow);
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  border: 2px solid transparent;
+  border-radius: calc(var(--convivial-radius) - 4px);
+  font-size: 1.1rem;
+  background: var(--convivial-background);
+  transition: var(--convivial-transition);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--convivial-primary);
+}
+
+.mood-selector {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.mood-selector:hover {
+  opacity: 1;
+}
+
+/* Results with discovery highlights */
+.result-item {
+  background: var(--convivial-surface);
+  border-radius: var(--convivial-radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: var(--convivial-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.result-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--convivial-shadow);
+}
+
+.result-item.collision {
+  border-left: 4px solid var(--convivial-collision);
+}
+
+.result-item.collision::before {
+  content: "✨ You both found this!";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--convivial-collision);
+  background: var(--convivial-background);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* Discovery feed sidebar */
+.discovery-feed {
+  position: fixed;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 300px;
+  max-height: 60vh;
+  background: var(--convivial-surface);
+  border-radius: var(--convivial-radius);
+  padding: 1.5rem;
+  box-shadow: var(--convivial-shadow);
+  overflow-y: auto;
+}
+
+.discovery-item {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: var(--convivial-background);
+  border-radius: calc(var(--convivial-radius) / 2);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--convivial-transition);
+}
+
+.discovery-item:hover {
+  background: var(--convivial-primary);
+  color: white;
+}
+
+.discovery-item .user {
+  font-weight: 600;
+  color: var(--convivial-accent);
+}
+
+.discovery-item .time {
+  font-size: 0.75rem;
+  color: var(--convivial-text-muted);
+}
+
+/* Morning coffee digest */
+.morning-coffee {
+  background: linear-gradient(135deg, var(--convivial-secondary), var(--convivial-accent));
+  color: white;
+  padding: 2rem;
+  border-radius: var(--convivial-radius);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.morning-coffee h2 {
+  font-family: var(--convivial-font-serif);
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.coffee-reactions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 2rem;
+}
+
+/* Gift discoveries */
+.gift-wrapper {
+  background: var(--convivial-gift);
+  color: white;
+  padding: 1.5rem;
+  border-radius: var(--convivial-radius);
+  text-align: center;
+  cursor: pointer;
+  transition: var(--convivial-transition);
+}
+
+.gift-wrapper:hover {
+  transform: scale(1.05);
+}
+
+.gift-wrapper.unwrapped {
+  background: var(--convivial-surface);
+  color: var(--convivial-text);
+}
+
+/* Animations */
+@keyframes gentle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(184, 192, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(184, 192, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(184, 192, 255, 0);
+  }
+}
+
+/* Voice note player */
+.voice-note {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--convivial-surface);
+  border-radius: calc(var(--convivial-radius) / 2);
+  cursor: pointer;
+}
+
+.voice-note:hover {
+  background: var(--convivial-primary);
+  color: white;
+}
+
+.voice-note .waveform {
+  flex: 1;
+  height: 30px;
+  background: url('data:image/svg+xml;utf8,<svg>...</svg>') center no-repeat;
+  opacity: 0.6;
+}
+
+/* Collection visualization */
+.collection-garden {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.collection-plant {
+  aspect-ratio: 1;
+  background: var(--convivial-surface);
+  border-radius: var(--convivial-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--convivial-transition);
+}
+
+.collection-plant:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--convivial-shadow);
+}
+
+.collection-plant .growth-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--convivial-primary);
+  height: var(--growth-percentage, 20%);
+  opacity: 0.3;
+  transition: height 1s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .discovery-feed {
+    position: static;
+    transform: none;
+    width: 100%;
+    margin-top: 2rem;
+  }
+  
+  .presence-bubbles {
+    position: static;
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+}

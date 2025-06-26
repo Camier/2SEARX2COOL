@@ -1,5 +1,8 @@
 /* 2SEARX2COOL Application Styles */
 
+/* Import component styles */
+@import '../components/library/Library.css';
+
 /* CSS Variables */
 :root {
   /* Colors - Light Theme */

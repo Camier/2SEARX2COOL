@@ -1,0 +1,39 @@
+--- Add this to results.html before the main results loop ---
+
+<!-- Calculator/Answer Results -->
+{% if answers %}
+<div class="answer-box terminal-section">
+    <div class="section-header">[CALCULATED RESULT]</div>
+    {% for answer in answers %}
+    <div class="answer-content">
+        <span class="answer-label">RESULT:</span>
+        <span class="answer-value">{{ answer }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+--- Add this CSS for answer display ---
+<style>
+.answer-box {
+    border: 2px solid #ffb000;
+    background: rgba(255, 176, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.answer-content {
+    font-size: 18px;
+    padding: 10px;
+}
+
+.answer-label {
+    color: #ffb000;
+    margin-right: 10px;
+}
+
+.answer-value {
+    color: #00ff00;
+    font-weight: bold;
+    text-shadow: 0 0 5px #00ff00;
+}
+</style>

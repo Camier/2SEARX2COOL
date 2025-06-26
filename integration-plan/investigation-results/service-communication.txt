@@ -1,0 +1,30 @@
+Port Configurations (from files):
+/home/mik/SEARXNG/2SEARX2COOL/scripts/utilities/database/db_manager.py:            'port': parsed.port or 5432,
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-noredis.sh:    export SEARXNG_REDIS_URL="redis://localhost:6379/2"
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-noredis.sh:    python searx/webapp.py --host 127.0.0.1 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-simple.sh:echo "Starting SearXNG Core on port 8888..."
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-simple.sh:python -m searx.webapp --host 127.0.0.1 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-simple.sh:echo "Starting Flask Orchestrator on port 8095..."
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-debug.sh:# Check if Redis is running on port 6379
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-debug.sh:    export SEARXNG_REDIS_URL="redis://localhost:6379/2"
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-debug.sh:    python searx/webapp.py --host 127.0.0.1 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-minimal.sh:python searx/webapp.py --host 127.0.0.1 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-fixed.sh:    export SEARXNG_REDIS_URL="redis://localhost:6379/2"
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-fixed.sh:    python -m searx.webapp --host 127.0.0.1 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-fixed.sh:        echo "- Check ports: netstat -tlnp | grep -E '8888|8095'"
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-wsl2-fixed.sh:python -m searx.webapp --host 0.0.0.0 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/start.sh:    python searx/webapp.py --host 127.0.0.1 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/start.sh:    echo "Starting SearXNG Core on port 8888..."
+/home/mik/SEARXNG/2SEARX2COOL/scripts/start.sh:    python -m searx.webapp --host 127.0.0.1 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/start.sh:    echo "Starting Flask Orchestrator on port 8095..."
+/home/mik/SEARXNG/2SEARX2COOL/scripts/start.sh:    python -m searx.webapp --host 0.0.0.0 --port 8888 &
+/home/mik/SEARXNG/2SEARX2COOL/scripts/deployment/deploy_music_engines_systematic.sh:        nohup python -m searx.webapp --host 127.0.0.1 --port 8888 > ../../logs/searxng.log 2>&1 &
+
+API Endpoints:
+/home/mik/SEARXNG/2SEARX2COOL/scripts/utilities/viewers/music_web_viewer.py:    print("📍 Access at: http://localhost:5555")
+/home/mik/SEARXNG/2SEARX2COOL/scripts/development/tests/check_music_engines_status.py:SEARXNG_URL = 'http://localhost:8888'
+/home/mik/SEARXNG/2SEARX2COOL/orchestrator/services/music_search_service.py:    def __init__(self, searxng_base_url: str = 'http://localhost:8888'):
+/home/mik/SEARXNG/2SEARX2COOL/orchestrator/services/music_aggregation_service.py:    def __init__(self, searxng_url: str = "http://localhost:8888"):
+/home/mik/SEARXNG/2SEARX2COOL/tests/integration/test_music_engines.py:    def __init__(self, base_url="http://localhost:8888"):
+/home/mik/SEARXNG/2SEARX2COOL/tests/integration/test_all_music_engines.py:SEARXNG_URL = 'http://localhost:8888'
+/home/mik/SEARXNG/2SEARX2COOL/tests/engines/test_music_engines_fixed.py:SEARXNG_BASE_URL = 'http://localhost:8888'

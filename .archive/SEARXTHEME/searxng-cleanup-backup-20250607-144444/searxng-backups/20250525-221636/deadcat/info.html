@@ -1,0 +1,72 @@
+{% extends "deadcat/base.html" %}
+{% block title %}{{ _('About') }} - {% endblock %}
+
+{% block content %}
+<main id="main_about" role="main">
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <span>ABOUT.EXE - SYSTEM_INFO</span>
+            <span>[■][□][×]</span>
+        </div>
+        
+        <div class="terminal-body">
+            <h1>&gt; ABOUT ALFREDISGONE</h1>
+            
+            <div style="margin: 20px 0;">
+                <h2 style="color: #ffb000;">MEMORIAL INFORMATION</h2>
+                <p>This search engine is dedicated to the memory of Alfred, a beloved cat who has crossed the rainbow bridge.</p>
+                
+                <pre class="dead-cat-ascii" style="margin: 20px 0;">
+    In Loving Memory
+        Alfred
+      2010-2024
+    
+       /\_/\
+      ( x.x )
+       > ^ <
+      |  |  |
+      (__|__)
+    Forever Missed</pre>
+                
+                <div class="memorial-messages" style="margin: 20px 0; padding: 15px; border: 1px solid #ffb000;">
+                    <h3 style="color: #ffb000;">Final Messages:</h3>
+                    <p style="color: #00ff00; font-style: italic;">
+                        "il a rendu l'âme"<br>
+                        "jlui ai donné un ptit comprimé"<br>
+                        "ça l'a calmé"<br>
+                        "il doit être au paradis mais jsuis dégouté"
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin: 30px 0;">
+                <h2 style="color: #00ff00;">TECHNICAL INFORMATION</h2>
+                <div style="background: rgba(0, 255, 0, 0.1); padding: 15px; font-family: monospace;">
+                    <p><span style="color: #ffb000;">[ENGINE]</span> SearXNG v{{ searx_version }}</p>
+                    <p><span style="color: #ffb000;">[THEME]</span> DEADCAT Terminal Memorial v4.0 (Harmonized)</p>
+                    <p><span style="color: #ffb000;">[STATUS]</span> CAT_PROCESS_TERMINATED</p>
+                    <p><span style="color: #ffb000;">[UPTIME]</span> ETERNAL_MEMORY_MODE</p>
+                    <p><span style="color: #00ffff;">[READABILITY]</span> 3-TIER SYSTEM ACTIVE</p>
+                </div>
+            </div>
+            
+            <div style="margin: 30px 0;">
+                <h2 style="color: #00ff00;">EASTER EGGS</h2>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li style="color: #00ff00; margin: 5px 0;">&gt; Type "flip" to rotate the cats</li>
+                    <li style="color: #00ff00; margin: 5px 0;">&gt; Type "meow" for a surprise</li>
+                    <li style="color: #00ff00; margin: 5px 0;">&gt; Konami Code for rainbow mode</li>
+                    <li style="color: #00ff00; margin: 5px 0;">&gt; Check console for memorial messages</li>
+                    <li style="color: #00ffff; margin: 5px 0;">&gt; Ctrl+Shift+R to toggle readability modes</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{{ url_for('index') }}" style="padding: 10px 20px; border: 1px solid #00ff00; color: #00ff00;">
+                    &gt; RETURN TO SEARCH
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

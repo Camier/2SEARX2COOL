@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-06-24T14:16:28.018565",
+  "services": {
+    "redis": {
+      "status": "running",
+      "port": 6379
+    },
+    "searxng": {
+      "status": "stopped",
+      "port": 8888,
+      "endpoint": "/",
+      "message": "Connection refused"
+    },
+    "orchestrator": {
+      "status": "stopped",
+      "port": 8889,
+      "endpoint": "/health",
+      "message": "Connection refused"
+    },
+    "postgres": {
+      "status": "running",
+      "port": 5432
+    }
+  },
+  "processes": {
+    "Redis Server": {
+      "running": true,
+      "count": 1,
+      "details": [
+        {
+          "pid": 32360,
+          "name": "redis-server",
+          "cpu": 0.0,
+          "memory": 5.953125
+        }
+      ]
+    },
+    "SearXNG Web Application": {
+      "running": false,
+      "count": 0,
+      "details": []
+    },
+    "Flask Orchestrator": {
+      "running": false,
+      "count": 0,
+      "details": []
+    },
+    "Engine Bridge Service": {
+      "running": false,
+      "count": 0,
+      "details": []
+    },
+    "Electron Desktop App": {
+      "running": false,
+      "count": 0,
+      "details": []
+    }
+  },
+  "system": {
+    "cpu_percent": 16.7,
+    "memory_percent": 36.7,
+    "disk_usage": 37.4
+  }
+}

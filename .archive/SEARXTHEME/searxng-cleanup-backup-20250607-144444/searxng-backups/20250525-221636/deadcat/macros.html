@@ -1,0 +1,25 @@
+{# Terminal-styled macros for DEADCAT theme #}
+
+{%- macro result_header(result, favicons, idx) -%}
+<h4 class="result_header" id="result-{{ idx }}">
+    {% if result.engine~".png" in favicons %}
+    <img width="14" height="14" class="favicon" src="{{ url_for('static', filename='img/icons/' + result.engine + '.png') }}" alt="{{ result.engine }}" />
+    {% endif %}
+    <a href="{{ result.url }}" {% if results_on_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>{{ result.title|safe }}</a>
+</h4>
+{%- endmacro -%}
+
+{%- macro result_sub_header(result) -%}
+{% if result.publishedDate %}<time class="published_date" datetime="{{ result.publishedDate }}">{{ result.publishedDate }}</time>{% endif %}
+<small class="url"><cite>{{ result.pretty_url|default(result.url) }}</cite></small>
+{%- endmacro -%}
+
+{# Add any other macros that might be needed #}
+{%- macro result_link(url, title, classes='') -%}
+<a href="{{ url }}" {% if classes %}class="{{ classes }}" {% endif %}{% if results_on_new_tab %}target="_blank" rel="noopener noreferrer"{% else %}rel="noreferrer"{% endif %}>{{ title }}</a>
+{%- endmacro -%}
+
+{# Image proxy macro #}
+{%- macro image_proxify(url) -%}
+{{ url_for('image_proxy', url=url) }}
+{%- endmacro -%}

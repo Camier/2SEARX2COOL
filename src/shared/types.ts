@@ -370,6 +370,18 @@ export const IPC_CHANNELS = {
   UPDATE_CHECK: 'update:check',
   UPDATE_DOWNLOAD: 'update:download',
   UPDATE_INSTALL: 'update:install',
+  
+  // Library
+  LIBRARY_INIT: 'library:init',
+  LIBRARY_SCAN: 'library:scan',
+  LIBRARY_SEARCH: 'library:search',
+  LIBRARY_GET_PAGE: 'library:get-page',
+  LIBRARY_GET_STATS: 'library:get-stats',
+  LIBRARY_GET_FILTERS: 'library:get-filters',
+  LIBRARY_UPDATE_FILES: 'library:update-files',
+  LIBRARY_DELETE_FILES: 'library:delete-files',
+  LIBRARY_UPDATE_METADATA: 'library:update-metadata',
+  LIBRARY_REFRESH_METADATA: 'library:refresh-metadata',
 } as const;
 
 // Error types

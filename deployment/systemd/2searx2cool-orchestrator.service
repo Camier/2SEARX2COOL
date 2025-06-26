@@ -1,0 +1,39 @@
+[Unit]
+Description=2SEARX2COOL Music Search Orchestrator
+Documentation=https://github.com/2searx2cool
+After=network.target searxng.service redis.service postgresql.service
+Requires=searxng.service
+
+[Service]
+Type=simple
+User=mik
+Group=mik
+WorkingDirectory=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/orchestrator
+Environment="PYTHONPATH=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/orchestrator"
+Environment="FLASK_APP=app.py"
+Environment="FLASK_ENV=production"
+
+# Use the production run script with eventlet monkey patching
+ExecStart=/usr/bin/python3 /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/orchestrator/run_server.py
+
+Restart=always
+RestartSec=10
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/orchestrator/logs
+ReadWritePaths=/tmp
+
+# Resource limits
+LimitNOFILE=65536
+MemoryLimit=2G
+
+# Socket.IO specific settings
+Environment="EVENTLET_NO_GREENDNS=yes"
+Environment="EVENTLET_THREADPOOL_SIZE=100"
+
+[Install]
+WantedBy=multi-user.target

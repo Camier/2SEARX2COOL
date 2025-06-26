@@ -129,6 +129,93 @@ export class DatabaseManager {
         session_id TEXT NOT NULL
       )
     `);
+
+    // Audio files table (Library feature)
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS audio_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        filePath TEXT NOT NULL UNIQUE,
+        title TEXT NOT NULL,
+        artist TEXT NOT NULL,
+        album TEXT,
+        genre TEXT,
+        year INTEGER,
+        duration INTEGER,
+        bitrate INTEGER,
+        sampleRate INTEGER,
+        fileSize INTEGER,
+        fileFormat TEXT,
+        dateAdded INTEGER NOT NULL,
+        lastModified INTEGER NOT NULL,
+        lastPlayed INTEGER,
+        playCount INTEGER DEFAULT 0,
+        skipCount INTEGER DEFAULT 0,
+        rating INTEGER,
+        isFavorite INTEGER DEFAULT 0,
+        trackNumber INTEGER,
+        discNumber INTEGER,
+        albumArtist TEXT,
+        composer TEXT,
+        comment TEXT,
+        lyrics TEXT,
+        bpm INTEGER,
+        albumArt TEXT,
+        md5Hash TEXT,
+        gain REAL,
+        personalScore REAL,
+        fingerprint TEXT,
+        acousticFeatures TEXT,
+        metadata TEXT
+      )
+    `);
+
+    // Create views for library
+    this.db.exec(`
+      -- Albums view
+      CREATE VIEW IF NOT EXISTS albums_view AS
+      SELECT 
+        album,
+        albumArtist as artist,
+        MIN(year) as year,
+        COUNT(*) as trackCount,
+        SUM(duration) as totalDuration,
+        AVG(rating) as avgRating,
+        SUM(playCount) as totalPlayCount,
+        MAX(albumArt) as albumArt,
+        MAX(lastPlayed) as lastPlayed
+      FROM audio_files
+      WHERE album IS NOT NULL
+      GROUP BY album, albumArtist
+      ORDER BY album;
+
+      -- Artists view
+      CREATE VIEW IF NOT EXISTS artists_view AS
+      SELECT 
+        artist,
+        COUNT(DISTINCT album) as albumCount,
+        COUNT(*) as trackCount,
+        SUM(duration) as totalDuration,
+        AVG(rating) as avgRating,
+        SUM(playCount) as totalPlayCount,
+        MAX(lastPlayed) as lastPlayed
+      FROM audio_files
+      GROUP BY artist
+      ORDER BY artist;
+      
+      -- Genres view
+      CREATE VIEW IF NOT EXISTS genres_view AS
+      SELECT 
+        genre,
+        COUNT(*) as trackCount,
+        COUNT(DISTINCT artist) as artistCount,
+        COUNT(DISTINCT album) as albumCount,
+        SUM(duration) as totalDuration,
+        AVG(rating) as avgRating
+      FROM audio_files
+      WHERE genre IS NOT NULL
+      GROUP BY genre
+      ORDER BY trackCount DESC;
+    `);
   }
 
   private createIndexes(): void {
@@ -142,6 +229,56 @@ export class DatabaseManager {
       CREATE INDEX IF NOT EXISTS idx_cached_results_search ON cached_results(search_id);
       CREATE INDEX IF NOT EXISTS idx_analytics_event ON analytics(event);
       CREATE INDEX IF NOT EXISTS idx_analytics_session ON analytics(session_id);
+      
+      -- Library indexes
+      CREATE INDEX IF NOT EXISTS idx_audio_files_artist ON audio_files(artist);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_album ON audio_files(album);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_genre ON audio_files(genre);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_year ON audio_files(year);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_rating ON audio_files(rating);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_date_added ON audio_files(dateAdded DESC);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_last_played ON audio_files(lastPlayed DESC);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_play_count ON audio_files(playCount DESC);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_favorite ON audio_files(isFavorite);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_file_path ON audio_files(filePath);
+      CREATE INDEX IF NOT EXISTS idx_audio_files_personal_score ON audio_files(personalScore DESC);
+    `);
+    
+    // Create full-text search virtual table
+    this.db.exec(`
+      CREATE VIRTUAL TABLE IF NOT EXISTS audio_files_fts USING fts5(
+        title,
+        artist,
+        album,
+        genre,
+        comment,
+        content=audio_files,
+        content_rowid=id
+      );
+      
+      -- Populate FTS table
+      INSERT OR REPLACE INTO audio_files_fts(rowid, title, artist, album, genre, comment)
+      SELECT id, title, artist, album, genre, comment FROM audio_files;
+      
+      -- Create triggers to keep FTS in sync
+      CREATE TRIGGER IF NOT EXISTS audio_files_fts_insert AFTER INSERT ON audio_files
+      BEGIN
+        INSERT INTO audio_files_fts(rowid, title, artist, album, genre, comment)
+        VALUES (new.id, new.title, new.artist, new.album, new.genre, new.comment);
+      END;
+      
+      CREATE TRIGGER IF NOT EXISTS audio_files_fts_update AFTER UPDATE ON audio_files
+      BEGIN
+        UPDATE audio_files_fts
+        SET title = new.title, artist = new.artist, album = new.album, 
+            genre = new.genre, comment = new.comment
+        WHERE rowid = new.id;
+      END;
+      
+      CREATE TRIGGER IF NOT EXISTS audio_files_fts_delete AFTER DELETE ON audio_files
+      BEGIN
+        DELETE FROM audio_files_fts WHERE rowid = old.id;
+      END;
     `);
   }
 

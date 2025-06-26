@@ -1,0 +1,48 @@
+{% extends "deadcat/base.html" %}
+
+{% block title %}404 - Cat Not Found{% endblock %}
+
+{% block content %}
+<div class="terminal-404">
+    <div class="terminal-header">
+        <div class="terminal-title">ERROR_404.EXE - CAT_NOT_FOUND</div>
+        <div class="terminal-controls">[■][□][×]</div>
+    </div>
+    
+    <div class="terminal-body">
+        <pre class="error-cat">
+     /\_/\  
+    ( o.o ) 
+     > ^ <  
+     |404|
+     |___|
+        </pre>
+        
+        <h1 class="error-title">[ERROR] PAGE NOT FOUND</h1>
+        
+        <div class="error-messages">
+            <p class="error-line">&gt; cat: /page/{{ request.path }}: No such file or directory</p>
+            <p class="error-line">&gt; [ERRNO 404] The requested page has gone to cat heaven</p>
+            <p class="error-line">&gt; Perhaps it's chasing mice in /dev/null</p>
+        </div>
+        
+        <div class="error-suggestions">
+            <p class="terminal-label">[SUGGESTIONS]</p>
+            <ul class="error-list">
+                <li>&gt; Check your URL for typos</li>
+                <li>&gt; The page may have moved to a better hunting ground</li>
+                <li>&gt; Try searching for what you need</li>
+            </ul>
+        </div>
+        
+        <div class="error-actions">
+            <a href="{{ url_for('index') }}" class="terminal-button">&gt; RETURN_HOME</a>
+            <a href="{{ url_for('search') }}" class="terminal-button">&gt; SEARCH</a>
+        </div>
+        
+        <div class="memorial-note">
+            <p>"même les pages disparaissent, comme Alfred..."</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

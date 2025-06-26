@@ -1,0 +1,5 @@
+Requirements Files:
+/home/mik/SEARXNG/2SEARX2COOL/orchestrator/requirements.txt
+/home/mik/SEARXNG/2SEARX2COOL/requirements.txt
+
+Setup Files:

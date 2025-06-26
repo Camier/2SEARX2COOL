@@ -1,0 +1,70 @@
+--- Add this to the search form section in results.html ---
+
+<!-- Time Range Filter -->
+<div class="search-filters terminal-section">
+    <div class="section-header">[SEARCH FILTERS]</div>
+    <div class="filter-controls">
+        <div class="filter-group">
+            <label for="time_range" class="filter-label">TIME_RANGE:</label>
+            <select name="time_range" id="time_range" class="terminal-select">
+                <option value="" {% if not time_range %}selected{% endif %}>ANY_TIME</option>
+                <option value="day" {% if time_range == 'day' %}selected{% endif %}>LAST_24H</option>
+                <option value="week" {% if time_range == 'week' %}selected{% endif %}>LAST_WEEK</option>
+                <option value="month" {% if time_range == 'month' %}selected{% endif %}>LAST_MONTH</option>
+                <option value="year" {% if time_range == 'year' %}selected{% endif %}>LAST_YEAR</option>
+            </select>
+        </div>
+        
+        <div class="filter-group">
+            <label for="language" class="filter-label">LANGUAGE:</label>
+            <select name="language" id="language" class="terminal-select">
+                <option value="all" {% if language == 'all' %}selected{% endif %}>ALL</option>
+                {% for lang_id, lang_name in languages_by_locale.items() %}
+                <option value="{{ lang_id }}" {% if lang_id == language %}selected{% endif %}>
+                    {{ lang_name|upper }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+
+--- Add this CSS for filters ---
+<style>
+.filter-controls {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-label {
+    color: #00ff00;
+    font-size: 12px;
+}
+
+.terminal-select {
+    background: #000;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 5px 10px;
+    font-family: monospace;
+    font-size: 12px;
+    outline: none;
+}
+
+.terminal-select:focus {
+    box-shadow: 0 0 5px #00ff00;
+}
+
+.terminal-select option {
+    background: #000;
+    color: #00ff00;
+}
+</style>

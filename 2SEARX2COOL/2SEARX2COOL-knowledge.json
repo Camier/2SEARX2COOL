@@ -1,0 +1,27 @@
+{
+  "project": "2SEARX2COOL",
+  "type": "migration",
+  "timestamp": "2025-06-23T07:43:14.130512",
+  "description": "Consolidated SearXNG music search platform",
+  "location": "/home/mik/SEARXNG/2SEARX2COOL",
+  "replaces": [
+    "searxng-cool",
+    "searxng-cool-old",
+    "searxng-cool-complete",
+    "searxng-cool-restored"
+  ],
+  "features": {
+    "engines": 27,
+    "architecture": "multi-tier",
+    "performance": "10k+ concurrent connections",
+    "components": [
+      "orchestrator",
+      "engines",
+      "music",
+      "config",
+      "scripts",
+      "docs",
+      "tests"
+    ]
+  }
+}

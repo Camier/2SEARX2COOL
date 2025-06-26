@@ -1,0 +1,209 @@
+{
+  "health_check": {
+    "timestamp": "2025-06-24T20:38:38.841077",
+    "overall_health": "healthy",
+    "services": {
+      "searxng": {
+        "name": "searxng",
+        "status": "healthy",
+        "response_time": 0.010036706924438477,
+        "details": {
+          "http_status": 200
+        }
+      },
+      "orchestrator": {
+        "name": "orchestrator",
+        "status": "healthy",
+        "response_time": 0.004754066467285156,
+        "details": {
+          "http_status": 404
+        }
+      },
+      "redis": {
+        "name": "redis",
+        "status": "healthy",
+        "response_time": 0.0004127025604248047,
+        "details": {
+          "version": "6.0.16",
+          "connected_clients": 1,
+          "used_memory_human": "852.57K"
+        }
+      },
+      "engine_bridge": {
+        "name": "engine_bridge",
+        "status": "error",
+        "response_time": null,
+        "details": {},
+        "error": "None/"
+      }
+    },
+    "resources": {
+      "cpu": {
+        "percent": 19.8,
+        "count": 12
+      },
+      "memory": {
+        "percent": 48.5,
+        "available_gb": 5.506343841552734,
+        "total_gb": 10.696510314941406
+      },
+      "disk": {
+        "percent": 37.4,
+        "free_gb": 598.315746307373
+      },
+      "processes": {
+        "searxng": {
+          "running": true,
+          "pid": 51665,
+          "cpu_percent": 0.0,
+          "memory_mb": 2.14453125
+        },
+        "orchestrator": {
+          "running": true,
+          "pid": 55440,
+          "cpu_percent": 0.0,
+          "memory_mb": 2.14453125
+        },
+        "redis": {
+          "running": true,
+          "pid": 32360,
+          "cpu_percent": 0.0,
+          "memory_mb": 5.953125
+        }
+      },
+      "alerts": []
+    },
+    "alerts": [],
+    "metrics": {
+      "uptime": {
+        "searxng": {
+          "up_count": 1,
+          "down_count": 0,
+          "uptime_percent": 100.0
+        },
+        "orchestrator": {
+          "up_count": 1,
+          "down_count": 0,
+          "uptime_percent": 100.0
+        },
+        "redis": {
+          "up_count": 1,
+          "down_count": 0,
+          "uptime_percent": 100.0
+        },
+        "engine_bridge": {
+          "up_count": 0,
+          "down_count": 1,
+          "uptime_percent": 0.0
+        }
+      },
+      "performance": {},
+      "errors": {}
+    }
+  },
+  "communication_test": {
+    "http_api": {
+      "searxng_search": {
+        "status": "success",
+        "code": 200,
+        "response_time": 1.454580307006836,
+        "name": "SearXNG Search API"
+      },
+      "orchestrator_health": {
+        "status": "success",
+        "code": 404,
+        "response_time": 0.0025866031646728516,
+        "name": "Orchestrator Health"
+      },
+      "orchestrator_/api/search": {
+        "status": "error",
+        "code": 401,
+        "response_time": 0.0018167495727539062,
+        "name": "Orchestrator /api/search"
+      },
+      "orchestrator_/api/engines": {
+        "status": "error",
+        "code": 401,
+        "response_time": 0.001260519027709961,
+        "name": "Orchestrator /api/engines"
+      },
+      "orchestrator_/api/status": {
+        "status": "success",
+        "code": 200,
+        "response_time": 0.0010716915130615234,
+        "name": "Orchestrator /api/status"
+      }
+    },
+    "websocket": {
+      "connection": {
+        "status": "error",
+        "error": "server rejected WebSocket connection: HTTP 400"
+      }
+    },
+    "json_rpc": {
+      "ping": {
+        "status": "not_found",
+        "tried_endpoints": [
+          "http://localhost:8889/json-rpc",
+          "http://localhost:8889/rpc",
+          "http://localhost:8889/api/rpc"
+        ]
+      },
+      "list_engines": {
+        "status": "not_found",
+        "tried_endpoints": [
+          "http://localhost:8889/json-rpc",
+          "http://localhost:8889/rpc",
+          "http://localhost:8889/api/rpc"
+        ]
+      },
+      "search": {
+        "status": "not_found",
+        "tried_endpoints": [
+          "http://localhost:8889/json-rpc",
+          "http://localhost:8889/rpc",
+          "http://localhost:8889/api/rpc"
+        ]
+      }
+    },
+    "overall": "good (HTTP only)"
+  },
+  "integration_test": {
+    "unified_search": {
+      "status": "success",
+      "total_results": 10,
+      "sources": {
+        "searxng": {
+          "status": "success",
+          "count": 10,
+          "engines": [
+            "bandcamp",
+            "youtube",
+            "piped.music",
+            "soundcloud",
+            "beatport",
+            "lastfm",
+            "wikicommons.audio",
+            "musicbrainz",
+            "mixcloud",
+            "genius",
+            "radio+browser"
+          ]
+        },
+        "custom": {
+          "status": "success",
+          "count": 0,
+          "engines": []
+        }
+      }
+    },
+    "engine_listing": {
+      "status": "success",
+      "searxng_count": 13,
+      "custom_count": 25
+    },
+    "status_check": {},
+    "error": "'EngineInfo' object has no attribute 'get'"
+  },
+  "overall_status": "good"
+}

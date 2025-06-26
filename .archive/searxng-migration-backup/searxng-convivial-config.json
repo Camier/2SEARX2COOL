@@ -1,0 +1,357 @@
+[
+    {
+        "Id": "74aeda9072e41ff9000cd4d268671187985425706709667ca2aab94f8a47d90f",
+        "Created": "2025-06-14T14:31:54.79604344Z",
+        "Path": "/usr/local/searxng/entrypoint.sh",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 2079,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2025-06-14T18:42:53.685557864Z",
+            "FinishedAt": "2025-06-14T18:42:42.092883436Z",
+            "Health": {
+                "Status": "healthy",
+                "FailingStreak": 0,
+                "Log": [
+                    {
+                        "Start": "2025-06-14T22:50:05.144171086+02:00",
+                        "End": "2025-06-14T22:50:05.205923361+02:00",
+                        "ExitCode": 0,
+                        "Output": ""
+                    },
+                    {
+                        "Start": "2025-06-14T22:50:34.408532286+02:00",
+                        "End": "2025-06-14T22:50:34.458767239+02:00",
+                        "ExitCode": 0,
+                        "Output": ""
+                    },
+                    {
+                        "Start": "2025-06-14T22:51:03.659016536+02:00",
+                        "End": "2025-06-14T22:51:03.727585232+02:00",
+                        "ExitCode": 0,
+                        "Output": ""
+                    },
+                    {
+                        "Start": "2025-06-14T22:51:32.921979107+02:00",
+                        "End": "2025-06-14T22:51:32.999547461+02:00",
+                        "ExitCode": 0,
+                        "Output": ""
+                    },
+                    {
+                        "Start": "2025-06-14T22:52:02.193029044+02:00",
+                        "End": "2025-06-14T22:52:02.252133447+02:00",
+                        "ExitCode": 0,
+                        "Output": ""
+                    }
+                ]
+            }
+        },
+        "Image": "sha256:9158ff024b3b08e43c5af30ae7b918963dbaad47e020d84506c913afc36db07f",
+        "ResolvConfPath": "/var/lib/docker/containers/74aeda9072e41ff9000cd4d268671187985425706709667ca2aab94f8a47d90f/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/74aeda9072e41ff9000cd4d268671187985425706709667ca2aab94f8a47d90f/hostname",
+        "HostsPath": "/var/lib/docker/containers/74aeda9072e41ff9000cd4d268671187985425706709667ca2aab94f8a47d90f/hosts",
+        "LogPath": "/var/lib/docker/containers/74aeda9072e41ff9000cd4d268671187985425706709667ca2aab94f8a47d90f/74aeda9072e41ff9000cd4d268671187985425706709667ca2aab94f8a47d90f-json.log",
+        "Name": "/searxng-convivial",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": [
+                "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/themes:/usr/local/searxng/searx/static/themes/custom:ro",
+                "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/searxng:/etc/searxng:rw",
+                "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/plugins:/usr/local/searxng/searx/plugins/custom:ro"
+            ],
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {
+                    "max-file": "3",
+                    "max-size": "10m"
+                }
+            },
+            "NetworkMode": "searxng-convivial-instance_searxng",
+            "PortBindings": {
+                "8080/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "unless-stopped",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": [
+                "CAP_CHOWN",
+                "CAP_SETGID",
+                "CAP_SETUID"
+            ],
+            "CapDrop": [
+                "ALL"
+            ],
+            "CgroupnsMode": "private",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": [],
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": null,
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": null,
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware",
+                "/sys/devices/virtual/powercap"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "ID": "74aeda9072e41ff9000cd4d268671187985425706709667ca2aab94f8a47d90f",
+                "LowerDir": "/var/lib/docker/overlay2/116b67d2f295a98ead3aa0971a93c1f8d7468e42a20345a192338e74bc6726cf-init/diff:/var/lib/docker/overlay2/702dbffb41ac70062c9613318791391e2b28fc4b2a5ce77bce6b578042dfcf7e/diff",
+                "MergedDir": "/var/lib/docker/overlay2/116b67d2f295a98ead3aa0971a93c1f8d7468e42a20345a192338e74bc6726cf/merged",
+                "UpperDir": "/var/lib/docker/overlay2/116b67d2f295a98ead3aa0971a93c1f8d7468e42a20345a192338e74bc6726cf/diff",
+                "WorkDir": "/var/lib/docker/overlay2/116b67d2f295a98ead3aa0971a93c1f8d7468e42a20345a192338e74bc6726cf/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/themes",
+                "Destination": "/usr/local/searxng/searx/static/themes/custom",
+                "Mode": "ro",
+                "RW": false,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "volume",
+                "Name": "88cb6c6265f8ce17d08b69c1ba3e44fb8c5c57c763d2d10c1cfb09dea0c54558",
+                "Source": "/var/lib/docker/volumes/88cb6c6265f8ce17d08b69c1ba3e44fb8c5c57c763d2d10c1cfb09dea0c54558/_data",
+                "Destination": "/var/cache/searxng",
+                "Driver": "local",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            },
+            {
+                "Type": "bind",
+                "Source": "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/searxng",
+                "Destination": "/etc/searxng",
+                "Mode": "rw",
+                "RW": true,
+                "Propagation": "rprivate"
+            },
+            {
+                "Type": "bind",
+                "Source": "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/plugins",
+                "Destination": "/usr/local/searxng/searx/plugins/custom",
+                "Mode": "ro",
+                "RW": false,
+                "Propagation": "rprivate"
+            }
+        ],
+        "Config": {
+            "Hostname": "74aeda9072e4",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "ExposedPorts": {
+                "8080/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "SEARXNG_BASE_URL=https://localhost/",
+                "SEARXNG_SECRET_KEY=ffc546c17e0591f450199d96a1143bdecb077450a1bd259819e0b92d6addbcbe",
+                "SEARXNG_BIND_ADDRESS=0.0.0.0:8080",
+                "CONFIG_PATH=/etc/searxng",
+                "DATA_PATH=/var/cache/searxng",
+                "HISTFILE=/dev/null",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt",
+                "SEARXNG_VERSION=2025.6.6+49a1f08",
+                "INSTANCE_NAME=SearXNG",
+                "AUTOCOMPLETE=",
+                "BASE_URL=",
+                "BIND_ADDRESS=[::]:8080",
+                "SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml",
+                "UWSGI_SETTINGS_PATH=/etc/searxng/uwsgi.ini",
+                "UWSGI_WORKERS=%k",
+                "UWSGI_THREADS=4"
+            ],
+            "Cmd": [],
+            "Healthcheck": {
+                "Test": [
+                    "CMD-SHELL",
+                    "wget --quiet --tries=1 --spider http://localhost:8080/healthz || exit 1"
+                ]
+            },
+            "Image": "searxng/searxng:latest",
+            "Volumes": {
+                "/etc/searxng": {},
+                "/var/cache/searxng": {}
+            },
+            "WorkingDir": "/usr/local/searxng/",
+            "Entrypoint": [
+                "/usr/local/searxng/entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {
+                "com.docker.compose.config-hash": "ad430835bf1b456ff002fe2e26dc3ad552137e8a74f3470a6e95ae21669be8ad",
+                "com.docker.compose.container-number": "1",
+                "com.docker.compose.depends_on": "redis-cache:service_started:false,redis-pubsub:service_started:false,postgres:service_started:false",
+                "com.docker.compose.image": "sha256:9158ff024b3b08e43c5af30ae7b918963dbaad47e020d84506c913afc36db07f",
+                "com.docker.compose.oneoff": "False",
+                "com.docker.compose.project": "searxng-convivial-instance",
+                "com.docker.compose.project.config_files": "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/docker-compose.yml",
+                "com.docker.compose.project.working_dir": "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance",
+                "com.docker.compose.service": "searxng",
+                "com.docker.compose.version": "2.36.2",
+                "org.opencontainers.image.authors": "searxng <https://github.com/searxng/searxng>",
+                "org.opencontainers.image.created": "2025-06-06T15:09:35Z",
+                "org.opencontainers.image.description": "A privacy-respecting, hackable metasearch engine",
+                "org.opencontainers.image.documentation": "https://github.com/searxng/searxng-docker",
+                "org.opencontainers.image.licenses": "AGPL-3.0-or-later",
+                "org.opencontainers.image.revision": "49a1f08a17772cbe8713eb4c5e6d260e01644b12",
+                "org.opencontainers.image.source": "https://github.com/searxng/searxng",
+                "org.opencontainers.image.title": "searxng",
+                "org.opencontainers.image.url": "https://github.com/searxng/searxng",
+                "org.opencontainers.image.version": "2025.6.6+49a1f08"
+            }
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "cecfa8f293d10cc361ccaa302ada4ab0b465e1aabcc0b54c8ed27cc5ddeeaa76",
+            "SandboxKey": "/var/run/docker/netns/cecfa8f293d1",
+            "Ports": {
+                "8080/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "8080"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "searxng-convivial-instance_searxng": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "searxng-convivial",
+                        "searxng"
+                    ],
+                    "MacAddress": "be:1d:3e:48:7a:3a",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "b7c3355e7fc117e84f7d79da00ccc50121563ccfd9f5f0d22ba13f828e9e0759",
+                    "EndpointID": "9c279265620e58d532571360041cf5e6646fda22851f5139b2f9a571932bd2c4",
+                    "Gateway": "172.19.0.1",
+                    "IPAddress": "172.19.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": [
+                        "searxng-convivial",
+                        "searxng",
+                        "74aeda9072e4"
+                    ]
+                }
+            }
+        }
+    }
+]

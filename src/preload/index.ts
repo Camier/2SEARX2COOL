@@ -3,7 +3,24 @@ import { electronAPI } from '@electron-toolkit/preload';
 import { IPC_CHANNELS } from '../shared/types';
 
 // Whitelist of allowed channels for security
-const ALLOWED_CHANNELS = Object.values(IPC_CHANNELS);
+const ALLOWED_CHANNELS = [
+  ...Object.values(IPC_CHANNELS),
+  // Player channels
+  'player:play', 'player:pause', 'player:stop', 'player:next', 'player:previous',
+  'player:seek', 'player:set-volume', 'player:get-state',
+  // Queue channels
+  'queue:add', 'queue:remove', 'queue:clear', 'queue:reorder', 'queue:get-all', 'queue:shuffle',
+  // Enhanced search channels
+  'search:online', 'search:offline', 'search:unified', 'search:suggestions', 'search:stats', 'search:clear-cache',
+  // Personal score channels
+  'score:update', 'score:get', 'score:recommendations',
+  // Other channels
+  'get-plugin-settings', 'set-plugin-settings', 'new-window', 'media-play', 'media-pause',
+  'media-next', 'media-previous', 'open-external', 'get-path', 'show-save-dialog', 'show-open-dialog',
+  'error:report', 'error:report-sync', 'error:get-recent', 'error:clear', 'error:get-report-config',
+  'error:set-report-config', 'error:export-reports', 'error:get-pending-reports',
+  'app:restart', 'app:get-version', 'app:get-path', 'app:show-item-in-folder', 'app:open-external'
+];
 
 // Validate channel is allowed
 function isAllowedChannel(channel: string): boolean {
@@ -186,6 +203,72 @@ const api = {
     getPath: (name: string) => ipcRenderer.invoke('app:get-path', name),
     showItemInFolder: (path: string) => ipcRenderer.send('app:show-item-in-folder', path),
     openExternal: (url: string) => ipcRenderer.send('app:open-external', url)
+  },
+
+  // Library management
+  library: {
+    init: () => ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_INIT),
+    scan: (paths: string[]) => ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_SCAN, paths),
+    search: (query: string) => ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_SEARCH, query),
+    getPage: (viewOptions: any, filter?: any, sort?: any) => 
+      ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_GET_PAGE, viewOptions, filter, sort),
+    getStats: () => ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_GET_STATS),
+    getFilters: () => ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_GET_FILTERS),
+    updateFiles: (ids: number[], updates: any) => 
+      ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_UPDATE_FILES, ids, updates),
+    deleteFiles: (ids: number[]) => 
+      ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_DELETE_FILES, ids),
+    updateMetadata: (ids: number[]) => 
+      ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_UPDATE_METADATA, ids),
+    refreshMetadata: (ids: number[]) => 
+      ipcRenderer.invoke(IPC_CHANNELS.LIBRARY_REFRESH_METADATA, ids)
+  },
+
+  // Music Player
+  player: {
+    play: (track?: any) => ipcRenderer.invoke('player:play', track),
+    pause: () => ipcRenderer.invoke('player:pause'),
+    stop: () => ipcRenderer.invoke('player:stop'),
+    next: () => ipcRenderer.invoke('player:next'),
+    previous: () => ipcRenderer.invoke('player:previous'),
+    seek: (position: number) => ipcRenderer.invoke('player:seek', position),
+    setVolume: (volume: number) => ipcRenderer.invoke('player:set-volume', volume),
+    getState: () => ipcRenderer.invoke('player:get-state')
+  },
+
+  // Queue Management
+  queue: {
+    add: (tracks: any[]) => ipcRenderer.invoke('queue:add', tracks),
+    remove: (indices: number[]) => ipcRenderer.invoke('queue:remove', indices),
+    clear: () => ipcRenderer.invoke('queue:clear'),
+    reorder: (from: number, to: number) => ipcRenderer.invoke('queue:reorder', from, to),
+    getAll: () => ipcRenderer.invoke('queue:get-all'),
+    shuffle: () => ipcRenderer.invoke('queue:shuffle')
+  },
+
+  // Enhanced Search
+  enhancedSearch: {
+    online: (query: string, options?: any) => 
+      ipcRenderer.invoke('search:online', query, options),
+    offline: (query: string, options?: any) => 
+      ipcRenderer.invoke('search:offline', query, options),
+    unified: (query: string, options?: any) => 
+      ipcRenderer.invoke('search:unified', query, options),
+    suggestions: (partial: string) => 
+      ipcRenderer.invoke('search:suggestions', partial),
+    stats: () => ipcRenderer.invoke('search:stats'),
+    clearCache: (query?: string) => 
+      ipcRenderer.invoke('search:clear-cache', query)
+  },
+
+  // Personal Scoring
+  personalScore: {
+    update: (trackId: string, data: any) => 
+      ipcRenderer.invoke('score:update', trackId, data),
+    get: (trackId: string) => 
+      ipcRenderer.invoke('score:get', trackId),
+    getRecommendations: () => 
+      ipcRenderer.invoke('score:recommendations')
   }
 };
 

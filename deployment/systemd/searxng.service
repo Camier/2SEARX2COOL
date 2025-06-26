@@ -1,0 +1,30 @@
+[Unit]
+Description=SearXNG Privacy-respecting metasearch engine
+Documentation=https://docs.searxng.org
+After=network.target
+
+[Service]
+Type=simple
+User=mik
+Group=mik
+WorkingDirectory=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/searxng-wttr
+Environment="SEARXNG_SETTINGS_PATH=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/config/searxng-settings.yml"
+Environment="PYTHONPATH=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/searxng-wttr"
+ExecStart=/usr/bin/python3 -m searx.webapp
+Restart=always
+RestartSec=10
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/searxng-wttr/searx/cache
+ReadWritePaths=/home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/searxng-wttr/searx/favicons
+
+# Resource limits
+LimitNOFILE=65536
+MemoryLimit=2G
+
+[Install]
+WantedBy=multi-user.target

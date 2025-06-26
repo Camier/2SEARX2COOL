@@ -1,0 +1,83 @@
+[0;34m=== 2SEARX2COOL Consolidation Script ===[0m
+[1;33mThis script will consolidate and clean up the project structure[0m
+[1;33mA backup will be created at: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/.backup-20250625-003440[0m
+
+[1;33mDRY RUN MODE - No changes will be made[0m
+
+[0;32mCreating backup...[0m
+
+[0;34mPhase 1: Critical Cleanup[0m
+[0;31mFound nested duplicate directory![0m
+[0;34m[DRY RUN][0m Would remove: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/2SEARX2COOL-FINAL-INTEGRATED (1.2G)
+
+[0;34mConsolidating log files...[0m
+[0;34m[DRY RUN][0m Would move: app.log → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/logs/app.log
+[0;34m[DRY RUN][0m Would move: engine-bridge.log → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/logs/engine-bridge.log
+[0;34m[DRY RUN][0m Would move: orchestrator.log → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/logs/orchestrator.log
+[0;34m[DRY RUN][0m Would move: searxng.log → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/logs/searxng.log
+
+[0;34mArchiving legacy directories...[0m
+[0;34m[DRY RUN][0m Would move: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/searxng-migration-backup → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/.archive/searxng-migration-backup
+[0;34m[DRY RUN][0m Would move: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/searxng-convivial → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/.archive/searxng-convivial
+[0;34m[DRY RUN][0m Would move: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/SEARXTHEME → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/.archive/SEARXTHEME
+
+[0;34mPhase 2: Consolidating startup scripts...[0m
+[0;34m[DRY RUN][0m Would move: start-fixed.sh → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/scripts/archive/start-fixed.sh
+[0;34m[DRY RUN][0m Would move: start-integrated.sh → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/scripts/archive/start-integrated.sh
+[0;34m[DRY RUN][0m Would move: start-properly.sh → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/scripts/archive/start-properly.sh
+[0;34m[DRY RUN][0m Would move: fix-and-start.sh → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/scripts/archive/fix-and-start.sh
+[0;34m[DRY RUN][0m Would move: fix-engine-imports.sh → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/scripts/archive/fix-engine-imports.sh
+[0;34m[DRY RUN][0m Would move: fix-system-architecture.sh → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/scripts/archive/fix-system-architecture.sh
+[0;34m[DRY RUN][0m Would move: run_orchestrator_dev.sh → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/scripts/archive/run_orchestrator_dev.sh
+
+[0;34mPhase 3: Organizing test files...[0m
+[0;34m[DRY RUN][0m Would move: test_engines_get.py → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/test/test_engines_get.py
+[0;34m[DRY RUN][0m Would move: test_music_engines_simple.py → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/test/test_music_engines_simple.py
+
+[0;34mPhase 4: Consolidating documentation...[0m
+[0;34m[DRY RUN][0m Would move: PHASE3-INTEGRATION-REPORT.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/archive/PHASE3-INTEGRATION-REPORT.md
+[0;34m[DRY RUN][0m Would move: PHASE4-PRODUCTION-READY-REPORT.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/archive/PHASE4-PRODUCTION-READY-REPORT.md
+[0;34m[DRY RUN][0m Would move: AUDIT_REPORT.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/AUDIT_REPORT.md
+[0;34m[DRY RUN][0m Would move: CONFIGURATION_MERGER_SUMMARY.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/CONFIGURATION_MERGER_SUMMARY.md
+[0;34m[DRY RUN][0m Would move: CONSOLIDATION-READY.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/CONSOLIDATION-READY.md
+[0;34m[DRY RUN][0m Would move: CONSOLIDATION-ROADMAP.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/CONSOLIDATION-ROADMAP.md
+[0;34m[DRY RUN][0m Would move: CONTRIBUTING.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/CONTRIBUTING.md
+[0;34m[DRY RUN][0m Would move: DEVELOPMENT_TOOLING_SUMMARY.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/DEVELOPMENT_TOOLING_SUMMARY.md
+[0;34m[DRY RUN][0m Would move: ELECTRON_ENHANCEMENTS_SUMMARY.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/ELECTRON_ENHANCEMENTS_SUMMARY.md
+[0;34m[DRY RUN][0m Would move: INTEGRATION-README.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/INTEGRATION-README.md
+[0;34m[DRY RUN][0m Would move: INTEGRATION-STATUS.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/INTEGRATION-STATUS.md
+[0;34m[DRY RUN][0m Would move: MUSIC-ENGINE-INTEGRATION-REPORT.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/MUSIC-ENGINE-INTEGRATION-REPORT.md
+[0;34m[DRY RUN][0m Would move: PHASE3-INTEGRATION-REPORT.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/PHASE3-INTEGRATION-REPORT.md
+[0;34m[DRY RUN][0m Would move: PHASE4-PRODUCTION-READY-REPORT.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/PHASE4-PRODUCTION-READY-REPORT.md
+[0;34m[DRY RUN][0m Would move: QA_TEST_REPORT.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/QA_TEST_REPORT.md
+[0;34m[DRY RUN][0m Would move: QA_WORKER_SUMMARY.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/QA_WORKER_SUMMARY.md
+[0;34m[DRY RUN][0m Would move: REFACTORING_SUMMARY.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/REFACTORING_SUMMARY.md
+[0;34m[DRY RUN][0m Would move: SECURITY.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/SECURITY.md
+[0;34m[DRY RUN][0m Would move: TASK_MANAGEMENT_PLAN.md → /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/docs/TASK_MANAGEMENT_PLAN.md
+
+[0;34mPhase 5: Organizing configurations...[0m
+[0;34m[DRY RUN][0m Would remove: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/config/unified (136K)
+
+[0;34mPhase 6: Consolidating engines...[0m
+[0;34m[DRY RUN][0m Would remove: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/adapted_engines (52K)
+[0;34m[DRY RUN][0m Would remove: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/2SEARX2COOL/engines (424K)
+
+[0;34mPhase 7: Cleaning temporary files...[0m
+
+[0;34m=== Consolidation Complete ===[0m
+[0;32m✓ Removed nested duplicates[0m
+[0;32m✓ Consolidated startup scripts → start.sh[0m
+[0;32m✓ Organized test files → /test/[0m
+[0;32m✓ Archived documentation → /docs/archive/[0m
+[0;32m✓ Centralized logs → /logs/[0m
+[0;32m✓ Cleaned temporary files[0m
+
+[1;33mBackup saved at: /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/.backup-20250625-003440[0m
+
+[0;34mSpace Savings:[0m
+Before: ~4.0K
+After:  4.2G
+
+[0;32mConsolidation successful![0m
+[1;33mReview the changes and remove the backup when satisfied:[0m
+rm -rf /home/mik/SEARXNG/2SEARX2COOL-FINAL-INTEGRATED/.backup-20250625-003440

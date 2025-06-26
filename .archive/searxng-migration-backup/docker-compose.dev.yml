@@ -1,0 +1,77 @@
+version: '3.8'
+
+# Development configuration with maximum personalization
+services:
+  searxng:
+    environment:
+      - SEARXNG_DEBUG=1
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    volumes:
+      # Live editing of everything
+      - ./searxng:/etc/searxng:rw
+      - ./plugins:/usr/local/searxng/searx/plugins/custom:rw
+      - ./themes:/usr/local/searxng/searx/static/themes/custom:rw
+      - ./templates:/usr/local/searxng/searx/templates/custom:rw
+      - ./static:/usr/local/searxng/searx/static/custom:rw
+      # Development tools
+      - ./dev/scripts:/scripts:ro
+    ports:
+      - "8080:8080"
+      - "5678:5678"  # Python debugger port
+    command: >
+      bash -c "
+        pip install ipython ipdb flask-debugtoolbar &&
+        python searx/webapp.py --debug
+      "
+
+  # Development database with GUI
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@local.dev
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    networks:
+      - searxng
+    depends_on:
+      - postgres
+
+  # Redis GUI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=cache:redis-cache:6379,pubsub:redis-pubsub:6380
+    ports:
+      - "8081:8081"
+    networks:
+      - searxng
+    depends_on:
+      - redis-cache
+      - redis-pubsub
+
+  # Live theme editor
+  theme-editor:
+    image: nginx:alpine
+    volumes:
+      - ./themes:/usr/share/nginx/html:rw
+      - ./dev/theme-editor:/usr/share/nginx/html/editor:ro
+    ports:
+      - "8082:80"
+    networks:
+      - searxng
+
+  # WebSocket debugging
+  websocket-debug:
+    build: ./websocket-server
+    environment:
+      - NODE_ENV=development
+      - DEBUG=socket.io:*
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node debugger
+    command: node --inspect=0.0.0.0:9229 server.js
+    volumes:
+      - ./websocket-server:/app:rw
+      - /app/node_modules  # Preserve node_modules

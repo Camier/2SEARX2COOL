@@ -1,0 +1,45 @@
+{% extends "deadcat/base.html" %}
+
+{% block title %}{{ _('Engines') }}{% endblock %}
+
+{% block content %}
+<div class="terminal-engines">
+    <div class="terminal-header">
+        <div class="terminal-title">ENGINES.EXE - ENGINE_STATUS</div>
+        <div class="terminal-controls">[■][□][×]</div>
+    </div>
+    
+    <div class="terminal-body">
+        <h1>&gt; SEARCH ENGINES STATUS</h1>
+        
+        <table class="engines-table">
+            <thead>
+                <tr>
+                    <th>ENGINE</th>
+                    <th>CATEGORY</th>
+                    <th>STATUS</th>
+                    <th>RESPONSE TIME</th>
+                    <th>ERRORS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for engine in engines|default([]) %}
+                <tr class="engine-row {% if engine.error_count > 0 %}has-errors{% endif %}">
+                    <td class="engine-name">{{ engine.name }}</td>
+                    <td class="engine-category">{{ engine.categories|join(', ') }}</td>
+                    <td class="engine-status">
+                        {% if engine.enabled %}
+                        <span class="status-enabled">[ONLINE]</span>
+                        {% else %}
+                        <span class="status-disabled">[OFFLINE]</span>
+                        {% endif %}
+                    </td>
+                    <td class="engine-time">{{ engine.avg_time|round(3)|default('0.000') }}s</td>
+                    <td class="engine-errors">{{ engine.error_count|default(0) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

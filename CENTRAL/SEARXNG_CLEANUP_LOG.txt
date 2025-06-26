@@ -1,0 +1,51 @@
+SearXNG Cleanup Log
+===================
+Date: 2025-06-13
+Time: 08:18
+
+BACKUP CREATED:
+- SEARXNG_SAFETY_BACKUP_20250613_081847.tar.gz (116MB)
+
+FILES REMOVED:
+
+Documentation (10 files):
+✓ SEARXNG/searxng-convivial-conversation-saved.md
+✓ SEARXNG/searxng-convivial-project-summary.md
+✓ SEARXNG/ADVANCED_SEARCH_SUMMARY.md
+✓ SEARXNG/CONTEXT7_SEARCH_REPORT.md
+✓ SEARXNG/organization_preview_searxng.md
+✓ SEARXNG_COMPLETE_KNOWLEDGE.md
+✓ SEARXNG/ALFREDISGONE_CRITICAL_UPDATE.md
+✓ SEARXNG/ALFREDISGONE_HANDOVER.md
+✓ SEARXNG/ALFREDISGONE_NEXT_CHAT_CONTINUE.md
+✓ SEARXNG/ALFREDISGONE_NEXT_CHAT_INSTRUCTIONS.md
+
+Scripts (8 files):
+✓ SEARXNG/searxng-cleanup.sh
+✓ SEARXNG/searxng-tailscale-installer.sh
+✓ SEARXNG/run-searxng-simple.sh
+✓ SEARXNG/fix-searxng-service.sh
+✓ SEARXNG/smart-searxng-fix.sh
+✓ SEARXNG/start-searxng-v2.sh
+✓ SEARXNG/start_alfredisgone.sh
+✓ SCRIPTS/networking/fix-searxng-networking.sh
+
+Directories:
+✓ PROJECTS/GITHUB/searxng-project/ (duplicate project)
+✓ SEARXNG/SEARXTHEME/searxng-setup/
+✓ SEARXNG/SEARXTHEME/feature_extracts/
+✓ SEARXNG/SEARXTHEME/theme_analysis/
+✓ SEARXNG/SEARXTHEME/deadcat_backup_* (multiple backup dirs)
+
+Miscellaneous (3 files):
+✓ SEARXNG/alfredisgone_homepage.png
+✓ SEARXNG/verify_alfredisgone_complete.js
+✓ CONFIG/searxng-access-info.txt
+
+PRESERVED:
+- SEARXNG/searxng-wttr/ (active instance)
+- SEARXNG/searxng-convivial/ (active instance)
+- SEARXNG/SEARXTHEME/ALFREDISGONE/ (memorial theme)
+- SEARXNG_CENTRAL/ (new centralized documentation)
+
+All knowledge is now centralized in /home/mik/SEARXNG_CENTRAL/

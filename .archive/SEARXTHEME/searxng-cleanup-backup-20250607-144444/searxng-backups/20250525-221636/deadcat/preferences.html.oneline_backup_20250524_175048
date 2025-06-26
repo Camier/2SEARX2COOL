@@ -1,0 +1,214 @@
+{% extends "deadcat/base.html" %}
+
+{% block title %}{{ _('Preferences') }}{% endblock %}
+
+{% block content %}
+<div class="terminal-preferences">
+    <div class="terminal-header">
+        <div class="terminal-title">PREFERENCES.EXE - SYSTEM_CONFIG</div>
+        <div class="terminal-controls">[■][□][×]</div>
+    </div>
+    
+    <div class="terminal-body">
+        <h1>&gt; SEARCH PREFERENCES</h1>
+        
+        <form method="post" action="{{ url_for('preferences') }}">
+            <!-- Categories Selection -->
+            <fieldset class="pref-section">
+                <legend class="terminal-legend">[DEFAULT_CATEGORIES]</legend>
+                <div class="category-selection">
+                    {% for categ in selected_categories %}
+                    <label class="category-pref">
+                        <input type="checkbox" name="category_{{ categ }}" value="1" checked>
+                        <span class="terminal-checkbox">[{{ categ|upper }}]</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+
+            <!-- General Settings -->
+            <fieldset class="pref-section">
+                <legend class="terminal-legend">[GENERAL_SETTINGS]</legend>
+                
+                <!-- Language (using locales, NOT settings.languages) -->
+                <div class="pref-item">
+                    <label for="locale">Search Language:</label>
+                    <select name="locale" id="locale" class="terminal-select">
+                        <option value="">{{ _('Default language') }}</option>
+                        {% for locale_code, locale_name in locales.items() %}
+                        <option value="{{ locale_code }}" {% if locale_code == current_locale %}selected{% endif %}>
+                            {{ locale_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Autocomplete -->
+                <div class="pref-item">
+                    <label for="autocomplete">Autocomplete:</label>
+                    <select name="autocomplete" id="autocomplete" class="terminal-select">
+                        <option value="">{{ _('None') }}</option>
+                        {% for backend in autocomplete_backends %}
+                        <option value="{{ backend }}" {% if backend == preferences.get_value('autocomplete') %}selected{% endif %}>
+                            {{ backend }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Results per page -->
+                <div class="pref-item">
+                    <label for="results_per_page">Results per page:</label>
+                    <input type="number" name="results_per_page" id="results_per_page" 
+                           value="{{ preferences.get_value('results_per_page') or 10 }}" 
+                           min="1" max="100" class="terminal-input">
+                </div>
+                
+                <!-- Theme -->
+                <div class="pref-item">
+                    <label for="theme">Theme:</label>
+                    <select name="theme" id="theme" class="terminal-select">
+                        {% for theme_name in themes %}
+                        <option value="{{ theme_name }}" {% if theme_name == preferences.get_value('theme') %}selected{% endif %}>
+                            {{ theme_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- DOI Resolver -->
+                <div class="pref-item">
+                    <label for="doi_resolver">DOI Resolver:</label>
+                    <select name="doi_resolver" id="doi_resolver" class="terminal-select">
+                        <option value="sci-hub.se" {% if current_doi_resolver == 'sci-hub.se' %}selected{% endif %}>sci-hub.se</option>
+                        <option value="sci-hub.st" {% if current_doi_resolver == 'sci-hub.st' %}selected{% endif %}>sci-hub.st</option>
+                        <option value="sci-hub.ru" {% if current_doi_resolver == 'sci-hub.ru' %}selected{% endif %}>sci-hub.ru</option>
+                    </select>
+                </div>
+            </fieldset>
+            
+            <!-- UI Settings -->
+            <fieldset class="pref-section">
+                <legend class="terminal-legend">[UI_SETTINGS]</legend>
+                
+                <div class="pref-item">
+                    <label>
+                        <input type="checkbox" name="results_on_new_tab" value="on"
+                               {% if preferences.get_value('results_on_new_tab') %}checked{% endif %}>
+                        Open result links in a new tab
+                    </label>
+                </div>
+                
+                <div class="pref-item">
+                    <label>
+                        <input type="checkbox" name="infinite_scroll" value="on"
+                               {% if preferences.get_value('infinite_scroll') %}checked{% endif %}>
+                        Infinite scroll
+                    </label>
+                </div>
+                
+                <div class="pref-item">
+                    <label>
+                        <input type="checkbox" name="image_proxy" value="on"
+                               {% if image_proxy %}checked{% endif %}>
+                        Proxy images
+                    </label>
+                </div>
+                
+                <!-- Favicon resolver -->
+                <div class="pref-item">
+                    <label for="favicon_resolver">Favicon Resolver:</label>
+                    <select name="favicon_resolver" id="favicon_resolver" class="terminal-select">
+                        <option value="">{{ _('None') }}</option>
+                        {% for resolver in favicon_resolver_names %}
+                        <option value="{{ resolver }}" {% if resolver == preferences.get_value('favicon_resolver') %}selected{% endif %}>
+                            {{ resolver }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </fieldset>
+            
+            <!-- Privacy Settings -->
+            <fieldset class="pref-section">
+                <legend class="terminal-legend">[PRIVACY_SETTINGS]</legend>
+                
+                <div class="pref-item">
+                    <label for="safesearch">Safe Search:</label>
+                    <select name="safesearch" id="safesearch" class="terminal-select">
+                        <option value="0" {% if preferences.get_value('safesearch') == '0' %}selected{% endif %}>{{ _('None') }}</option>
+                        <option value="1" {% if preferences.get_value('safesearch') == '1' %}selected{% endif %}>{{ _('Moderate') }}</option>
+                        <option value="2" {% if preferences.get_value('safesearch') == '2' %}selected{% endif %}>{{ _('Strict') }}</option>
+                    </select>
+                </div>
+                
+                <div class="pref-item">
+                    <label for="method">HTTP Method:</label>
+                    <select name="method" id="method" class="terminal-select">
+                        <option value="POST" {% if preferences.get_value('method') == 'POST' %}selected{% endif %}>POST</option>
+                        <option value="GET" {% if preferences.get_value('method') == 'GET' %}selected{% endif %}>GET</option>
+                    </select>
+                </div>
+            </fieldset>
+            
+            <!-- Plugins -->
+            {% if allowed_plugins %}
+            <fieldset class="pref-section">
+                <legend class="terminal-legend">[PLUGINS]</legend>
+                <div class="plugins-list">
+                    {% for plugin in allowed_plugins %}
+                    <label class="plugin-pref">
+                        <input type="checkbox" name="plugin_{{ plugin.id }}" value="on"
+                               {% if plugin.id in preferences.plugins %}checked{% endif %}>
+                        {{ plugin.name }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            {% endif %}
+            
+            <!-- Engine Settings -->
+            <fieldset class="pref-section">
+                <legend class="terminal-legend">[ENGINE_SETTINGS]</legend>
+                
+                <div class="engines-preferences">
+                    {% for categ_name, engines in engines_by_category.items() %}
+                    <div class="engine-category-prefs">
+                        <h3>&gt; {{ categ_name|upper }}</h3>
+                        {% for engine in engines if engine.name not in [searx_engine.name for searx_engine in engines_by_category.get('onions', [])] %}
+                        <label class="engine-pref">
+                            <input type="checkbox" name="engine_{{ engine.name }}__{{ categ_name }}" value="on"
+                                   {% if (engine.name, categ_name) not in disabled_engines %}checked{% endif %}>
+                            {{ engine.name }}
+                            {% if shortcuts.get(engine.name) %}
+                            <span class="engine-shortcut">[!{{ shortcuts[engine.name] }}]</span>
+                            {% endif %}
+                        </label>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+            
+            <div class="pref-actions">
+                <button type="submit" name="save" value="1" class="terminal-button save-button">&gt; SAVE_CONFIG</button>
+                <button type="submit" name="save" value="reset" class="terminal-button reset-button">&gt; RESET_DEFAULTS</button>
+                <a href="{{ url_for('index') }}" class="terminal-button cancel-button">&gt; CANCEL</a>
+            </div>
+            
+            <!-- Cookies and Privacy -->
+            <fieldset class="pref-section">
+                <legend class="terminal-legend">[PRIVACY_INFO]</legend>
+                <div class="privacy-info">
+                    <p>{{ _('These settings are stored in your cookies, this site does not use any third party cookies.') }}</p>
+                    {% if preferences_url_params %}
+                    <p>{{ _('Bookmark this URL to restore your preferences:') }}</p>
+                    <input type="text" value="{{ url_for('index', _external=True) }}?{{ preferences_url_params }}" 
+                           class="terminal-input url-input" readonly onclick="this.select()">
+                    {% endif %}
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

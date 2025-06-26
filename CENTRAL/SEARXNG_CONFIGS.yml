@@ -1,0 +1,445 @@
+# SearXNG Configuration Templates
+# All configurations consolidated in one place
+
+---
+# BASIC DOCKER-COMPOSE.YML
+---
+version: '3.7'
+
+services:
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "8890:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
+      - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY}
+    networks:
+      - searxng
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: searxng-redis
+    restart: unless-stopped
+    command: redis-server --save 30 1
+    volumes:
+      - redis-data:/data
+    networks:
+      - searxng
+
+networks:
+  searxng:
+
+volumes:
+  redis-data:
+
+---
+# CONVIVIAL DOCKER-COMPOSE.YML (ADVANCED)
+---
+version: '3.7'
+
+services:
+  # Auth Proxy
+  auth-proxy:
+    build: ./auth-proxy
+    container_name: searxng-auth-proxy
+    restart: unless-stopped
+    environment:
+      - SECRET_KEY=${AUTH_PROXY_SECRET_KEY:-dev-secret}
+      - SEARXNG_URL=http://searxng:8080
+      - AUTH_SERVICE_URL=http://auth-service:5000
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_HOST=redis-cache
+      - SESSION_COOKIE_DOMAIN=
+      - SESSION_COOKIE_SECURE=false
+    ports:
+      - "8090:8000"
+    networks:
+      - searxng
+    depends_on:
+      - searxng
+      - auth-service
+      - redis-cache
+
+  # Core SearXNG
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng-convivial
+    restart: unless-stopped
+    environment:
+      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
+      - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY}
+    volumes:
+      - ./searxng:/etc/searxng:rw
+      - ./plugins:/usr/local/searxng/searx/plugins/custom:ro
+      - ./themes:/usr/local/searxng/searx/static/themes/custom:ro
+    networks:
+      - searxng
+    depends_on:
+      - redis-cache
+      - postgres
+
+  # Auth Service
+  auth-service:
+    build: ./auth-service
+    container_name: searxng-auth
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql://searxng:${POSTGRES_PASSWORD}@postgres:5432/searxng_convivial
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - searxng
+    depends_on:
+      - postgres
+
+  # WebSocket Server
+  websocket-server:
+    build: ./websocket-server
+    container_name: searxng-websocket
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis-pubsub
+      - REDIS_PORT=6380
+    networks:
+      - searxng
+    depends_on:
+      - redis-pubsub
+
+  # Databases
+  postgres:
+    image: postgres:15
+    container_name: searxng-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=searxng
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=searxng_convivial
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d:ro
+    networks:
+      - searxng
+
+  redis-cache:
+    image: redis:alpine
+    container_name: searxng-redis-cache
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - searxng
+
+  redis-pubsub:
+    image: redis:alpine
+    container_name: searxng-redis-pubsub
+    restart: unless-stopped
+    command: redis-server --port 6380
+    networks:
+      - searxng
+
+  # Optional Nginx
+  nginx:
+    image: nginx:alpine
+    container_name: searxng-nginx
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    networks:
+      - searxng
+    depends_on:
+      - auth-proxy
+
+networks:
+  searxng:
+
+volumes:
+  postgres-data:
+  redis-data:
+
+---
+# BASIC SETTINGS.YML
+---
+use_default_settings: true
+
+general:
+  instance_name: "SearXNG"
+  contact_url: false
+  enable_metrics: false
+
+search:
+  safe_search: 0
+  autocomplete: "duckduckgo"
+  default_lang: "auto"
+  max_page: 5
+
+ui:
+  default_locale: "en"
+  query_in_title: true
+  infinite_scroll: true
+  default_theme: "simple"
+  simple_style: "auto"
+
+server:
+  port: 8080
+  bind_address: "0.0.0.0"
+  secret_key: "CHANGE_THIS_SECRET_KEY"
+  limiter: true
+  image_proxy: true
+
+redis:
+  url: redis://redis:6379/0
+
+outgoing:
+  request_timeout: 3.0
+  max_request_timeout: 10.0
+
+engines:
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    
+  - name: google
+    engine: google
+    shortcut: g
+    use_mobile_ui: false
+
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
+    base_url: 'https://{language}.wikipedia.org/'
+
+---
+# CONVIVIAL SETTINGS.YML (ADVANCED)
+---
+use_default_settings: true
+
+general:
+  instance_name: "Digital Salon 🌟"
+  contact_url: false
+  enable_metrics: false
+
+search:
+  safe_search: 0
+  autocomplete: "duckduckgo"
+  default_lang: "all"
+  max_page: 5
+  
+ui:
+  default_locale: "en"
+  query_in_title: true
+  infinite_scroll: true
+  default_theme: "simple"
+  theme_args:
+    simple_style: auto
+    
+# Redis for features
+redis:
+  cache_host: "redis-cache"
+  cache_port: 6379
+  pubsub_host: "redis-pubsub"  
+  pubsub_port: 6380
+  
+# PostgreSQL
+postgres:
+  host: "postgres"
+  database: "searxng_convivial"
+  user: "searxng"
+  password: "${POSTGRES_PASSWORD}"
+
+# Convivial settings
+convivial:
+  max_friends: 3
+  morning_coffee_hour: 8
+  collision_window_minutes: 60
+  gift_reveal_delay_hours: 24
+  
+# Academic engines
+engines:
+  - name: google scholar
+    engine: google_scholar
+    shortcut: gs
+    categories: science
+    
+  - name: arxiv
+    engine: arxiv
+    shortcut: arx
+    categories: science
+    timeout: 6.0
+    
+  - name: pubmed
+    engine: pubmed
+    shortcut: pm
+    categories: science
+    
+  # Music engines
+  - name: bandcamp
+    engine: bandcamp
+    shortcut: bc
+    categories: music
+    
+  - name: soundcloud
+    engine: soundcloud
+    shortcut: sc
+    categories: music
+    
+  - name: genius
+    engine: genius
+    shortcut: gen
+    categories: music
+    
+  # Privacy-friendly
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    
+  - name: startpage
+    engine: startpage
+    shortcut: sp
+    
+  # File search
+  - name: library genesis
+    engine: xpath
+    shortcut: lg
+    categories: files
+    search_url: http://libgen.rs/search.php?req={query}&page={pageno}
+    results_xpath: //table[@class="c"]//tr[position()>1]
+    url_xpath: .//td[3]/a/@href
+    title_xpath: .//td[3]/a
+    content_xpath: .//td[5]
+    
+  # Maps
+  - name: openstreetmap
+    engine: openstreetmap
+    shortcut: osm
+
+# Plugins
+enabled_plugins:
+  - 'Hash plugin'
+  - 'Self Information'
+  - 'Tracker URL remover'
+  - 'Unit converter'
+  - 'Ahmia blacklist'
+
+---
+# ENVIRONMENT VARIABLES (.env)
+---
+# Basic
+SEARXNG_HOSTNAME=localhost
+SEARXNG_SECRET_KEY=change_me_to_random_32_char_hex
+
+# For Convivial
+AUTH_PROXY_SECRET_KEY=another_random_secret
+JWT_SECRET=jwt_secret_here
+POSTGRES_PASSWORD=secure_postgres_password
+
+# Optional
+FLASK_ENV=development
+SESSION_COOKIE_DOMAIN=
+ENV=development
+
+---
+# NGINX CONFIGURATION
+---
+server {
+    listen 80;
+    server_name localhost;
+    
+    # Redirect to HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name localhost;
+    
+    # SSL certificates
+    ssl_certificate /etc/letsencrypt/live/localhost/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/localhost/privkey.pem;
+    
+    # Security headers
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "no-referrer" always;
+    
+    location / {
+        proxy_pass http://auth-proxy:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # WebSocket support
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+    
+    location /ws {
+        proxy_pass http://websocket-server:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+
+---
+# SYSTEMD SERVICE (Alternative to Docker)
+---
+[Unit]
+Description=SearXNG privacy-respecting metasearch engine
+After=network.target
+
+[Service]
+Type=simple
+User=searxng
+Group=searxng
+WorkingDirectory=/usr/local/searxng
+ExecStart=/usr/local/searxng/searx-pyenv/bin/python -m searx.webapp
+Restart=on-failure
+Environment="SEARXNG_SETTINGS_PATH=/etc/searxng/settings.yml"
+
+[Install]
+WantedBy=multi-user.target
+
+---
+# WINDOWS PORT FORWARDING BATCH SCRIPT
+---
+@echo off
+echo Setting up SearXNG port forwarding...
+
+REM Get WSL2 IP
+for /f "tokens=2 delims=:" %%a in ('wsl hostname -I') do set WSL_IP=%%a
+set WSL_IP=%WSL_IP: =%
+
+echo WSL2 IP: %WSL_IP%
+
+REM Remove existing rules
+netsh interface portproxy delete v4tov4 listenport=8890
+netsh interface portproxy delete v4tov4 listenport=8899
+
+REM Add new rules
+netsh interface portproxy add v4tov4 listenport=8890 listenaddress=0.0.0.0 connectport=8890 connectaddress=%WSL_IP%
+netsh interface portproxy add v4tov4 listenport=8899 listenaddress=0.0.0.0 connectport=8080 connectaddress=%WSL_IP%
+
+REM Add firewall rules
+netsh advfirewall firewall add rule name="SearXNG Auth" dir=in action=allow protocol=TCP localport=8890
+netsh advfirewall firewall add rule name="SearXNG Direct" dir=in action=allow protocol=TCP localport=8899
+
+echo Done! Access SearXNG at:
+echo   - http://localhost:8890 (with auth)
+echo   - http://localhost:8899 (direct)
+pause

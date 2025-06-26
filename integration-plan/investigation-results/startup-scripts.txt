@@ -1,0 +1,19 @@
+Shell Scripts:
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-noredis.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-simple.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-debug.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-minimal.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-dev-fixed.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/archived/start-wsl2-fixed.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/start.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/deployment/start-production.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/deployment/start-eventlet-production.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/development/start-all-services.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/development/start-orchestrator.sh
+/home/mik/SEARXNG/2SEARX2COOL/scripts/development/start-dev.sh
+/home/mik/SEARXNG/2SEARX2COOL/tests/run-tests.sh
+
+Python Scripts:
+
+Service Files:
+/home/mik/SEARXNG/2SEARX2COOL/config/2searx2cool.service

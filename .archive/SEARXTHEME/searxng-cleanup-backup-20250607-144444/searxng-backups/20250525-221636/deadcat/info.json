@@ -1,0 +1,15 @@
+{
+    "name": "deadcat",
+    "description": "ALFREDISGONE Terminal Memorial Theme v4.0 - Harmonized Edition",
+    "version": "4.0",
+    "author": "ALFREDISGONE Memorial Project",
+    "license": "AGPL-3.0",
+    "maintainer": "mik",
+    "public": true,
+    "styles": {
+        "default": "main.css"
+    },
+    "scripts": {
+        "default": "main.js"
+    }
+}

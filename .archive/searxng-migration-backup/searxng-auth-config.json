@@ -1,0 +1,318 @@
+[
+    {
+        "Id": "94c502099804f2cb7728f54a71eb30fac4b3dd98edf58ce95adf315413c3ce5a",
+        "Created": "2025-06-14T14:31:54.796447589Z",
+        "Path": "gunicorn",
+        "Args": [
+            "--bind",
+            "0.0.0.0:5000",
+            "--workers",
+            "2",
+            "--threads",
+            "4",
+            "--timeout",
+            "60",
+            "app:app"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 2227,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2025-06-14T18:42:53.697444333Z",
+            "FinishedAt": "2025-06-14T18:42:42.092841394Z",
+            "Health": {
+                "Status": "unhealthy",
+                "FailingStreak": 262,
+                "Log": [
+                    {
+                        "Start": "2025-06-14T22:49:52.923975883+02:00",
+                        "End": "2025-06-14T22:49:53.03106938+02:00",
+                        "ExitCode": 1,
+                        "Output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 216, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 525, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 634, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 563, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 496, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 643, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 429: TOO MANY REQUESTS\n"
+                    },
+                    {
+                        "Start": "2025-06-14T22:50:22.234460368+02:00",
+                        "End": "2025-06-14T22:50:22.34543787+02:00",
+                        "ExitCode": 1,
+                        "Output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 216, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 525, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 634, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 563, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 496, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 643, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 429: TOO MANY REQUESTS\n"
+                    },
+                    {
+                        "Start": "2025-06-14T22:50:51.545810326+02:00",
+                        "End": "2025-06-14T22:50:51.643982387+02:00",
+                        "ExitCode": 1,
+                        "Output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 216, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 525, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 634, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 563, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 496, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 643, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 429: TOO MANY REQUESTS\n"
+                    },
+                    {
+                        "Start": "2025-06-14T22:51:20.841659408+02:00",
+                        "End": "2025-06-14T22:51:20.998949864+02:00",
+                        "ExitCode": 1,
+                        "Output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 216, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 525, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 634, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 563, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 496, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 643, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 429: TOO MANY REQUESTS\n"
+                    },
+                    {
+                        "Start": "2025-06-14T22:51:50.196918232+02:00",
+                        "End": "2025-06-14T22:51:50.289113937+02:00",
+                        "ExitCode": 1,
+                        "Output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 216, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 525, in open\n    response = meth(req, response)\n               ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 634, in http_response\n    response = self.parent.error(\n               ^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 563, in error\n    return self._call_chain(*args)\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 496, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/usr/local/lib/python3.11/urllib/request.py\", line 643, in http_error_default\n    raise HTTPError(req.full_url, code, msg, hdrs, fp)\nurllib.error.HTTPError: HTTP Error 429: TOO MANY REQUESTS\n"
+                    }
+                ]
+            }
+        },
+        "Image": "sha256:7d3cc7616f85fa10dff13aeb21ec30f604176d16421c465c17060c562a27eae6",
+        "ResolvConfPath": "/var/lib/docker/containers/94c502099804f2cb7728f54a71eb30fac4b3dd98edf58ce95adf315413c3ce5a/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/94c502099804f2cb7728f54a71eb30fac4b3dd98edf58ce95adf315413c3ce5a/hostname",
+        "HostsPath": "/var/lib/docker/containers/94c502099804f2cb7728f54a71eb30fac4b3dd98edf58ce95adf315413c3ce5a/hosts",
+        "LogPath": "/var/lib/docker/containers/94c502099804f2cb7728f54a71eb30fac4b3dd98edf58ce95adf315413c3ce5a/94c502099804f2cb7728f54a71eb30fac4b3dd98edf58ce95adf315413c3ce5a-json.log",
+        "Name": "/searxng-auth",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "searxng-convivial-instance_searxng",
+            "PortBindings": {
+                "5000/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "5000"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "unless-stopped",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": [],
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": null,
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": null,
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/interrupts",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware",
+                "/sys/devices/virtual/powercap"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": {
+                "ID": "94c502099804f2cb7728f54a71eb30fac4b3dd98edf58ce95adf315413c3ce5a",
+                "LowerDir": "/var/lib/docker/overlay2/b41f2e3aaa076e8464a5bec05036581a6f2c78ed2a888417ae2beafc8df2c55d-init/diff:/var/lib/docker/overlay2/ajofudcrte4hs12os86mixg1v/diff:/var/lib/docker/overlay2/y2ug6hxg3q1o9125m3j8r9bbg/diff:/var/lib/docker/overlay2/j7fpva2b5n3wk3p4cb7ebv7vn/diff:/var/lib/docker/overlay2/g2pj6e4eave5l3z3b1tchvu3m/diff:/var/lib/docker/overlay2/nra0uxylbkgtpggiz07s5ayjb/diff:/var/lib/docker/overlay2/vwoozzfmik14qg107q9al3dbo/diff:/var/lib/docker/overlay2/6ec6ada705e1c8eabf555bf541580087325a08a38088548421e971835dbbb522/diff:/var/lib/docker/overlay2/a0cf53e6ff1c96d26c4eef3aea6ee4f2dcfca834cf9cee570beeac285e599b58/diff:/var/lib/docker/overlay2/46aa9f45a1837f5ee7f961fb36a9b49409f6f5fc17ed53492456425741cffa16/diff:/var/lib/docker/overlay2/e58dfdf9afe742a520c6f469c0688078360b9537d8f775a48d2988bb00195edd/diff",
+                "MergedDir": "/var/lib/docker/overlay2/b41f2e3aaa076e8464a5bec05036581a6f2c78ed2a888417ae2beafc8df2c55d/merged",
+                "UpperDir": "/var/lib/docker/overlay2/b41f2e3aaa076e8464a5bec05036581a6f2c78ed2a888417ae2beafc8df2c55d/diff",
+                "WorkDir": "/var/lib/docker/overlay2/b41f2e3aaa076e8464a5bec05036581a6f2c78ed2a888417ae2beafc8df2c55d/work"
+            },
+            "Name": "overlay2"
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "94c502099804",
+            "Domainname": "",
+            "User": "authservice",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "ExposedPorts": {
+                "5000/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "POSTGRES_PASSWORD=jJHh8sw52tGLyWb6WZvZ3vKzwWkcQvPdS6ysy75xUZw=",
+                "POSTGRES_USER=searxng",
+                "POSTGRES_DB=searxng_convivial",
+                "POSTGRES_HOST=postgres",
+                "JWT_SECRET=585e7b911014c4131a13cfc46d206629dbc314f5bc981644942ff09ac9178424",
+                "SECRET_KEY=a9f3d2b1e8c7f6a5d4e3b2c1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1",
+                "ALLOWED_ORIGINS=http://localhost:8890,http://localhost:3000",
+                "REDIS_HOST=redis-cache",
+                "ENV=production",
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=A035C8C19219BA821ECEA86B64E628F8D684696D",
+                "PYTHON_VERSION=3.11.13",
+                "PYTHON_SHA256=8fb5f9fbc7609fa822cb31549884575db7fd9657cbffb89510b5d7975963a83a"
+            ],
+            "Cmd": [
+                "gunicorn",
+                "--bind",
+                "0.0.0.0:5000",
+                "--workers",
+                "2",
+                "--threads",
+                "4",
+                "--timeout",
+                "60",
+                "app:app"
+            ],
+            "Healthcheck": {
+                "Test": [
+                    "CMD",
+                    "python",
+                    "-c",
+                    "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"
+                ],
+                "Interval": 30000000000,
+                "Timeout": 3000000000,
+                "StartPeriod": 40000000000,
+                "Retries": 3
+            },
+            "Image": "searxng-convivial-instance-auth-service",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "com.docker.compose.config-hash": "3ae45ab8efe5970c3b21fea6d8764923485537c26ac4115848407c25698608e7",
+                "com.docker.compose.container-number": "1",
+                "com.docker.compose.depends_on": "postgres:service_started:false,redis-cache:service_started:false",
+                "com.docker.compose.image": "sha256:7d3cc7616f85fa10dff13aeb21ec30f604176d16421c465c17060c562a27eae6",
+                "com.docker.compose.oneoff": "False",
+                "com.docker.compose.project": "searxng-convivial-instance",
+                "com.docker.compose.project.config_files": "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance/docker-compose.yml",
+                "com.docker.compose.project.working_dir": "/home/mik/SEARXNG/searxng-convivial/searxng-convivial-instance",
+                "com.docker.compose.service": "auth-service",
+                "com.docker.compose.version": "2.36.2"
+            }
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "24f74933001017318b79039f4a12d709fc21dda9169f507f9a2e39867ee1924f",
+            "SandboxKey": "/var/run/docker/netns/24f749330010",
+            "Ports": {
+                "5000/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "5000"
+                    },
+                    {
+                        "HostIp": "::",
+                        "HostPort": "5000"
+                    }
+                ]
+            },
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "",
+            "Gateway": "",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "",
+            "IPPrefixLen": 0,
+            "IPv6Gateway": "",
+            "MacAddress": "",
+            "Networks": {
+                "searxng-convivial-instance_searxng": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": [
+                        "searxng-auth",
+                        "auth-service"
+                    ],
+                    "MacAddress": "d6:a5:f4:f3:20:58",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "b7c3355e7fc117e84f7d79da00ccc50121563ccfd9f5f0d22ba13f828e9e0759",
+                    "EndpointID": "8e8937affcc011e473317757fc5d518ee88d6cac8cbbbe8522e388a4caea2156",
+                    "Gateway": "172.19.0.1",
+                    "IPAddress": "172.19.0.9",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": [
+                        "searxng-auth",
+                        "auth-service",
+                        "94c502099804"
+                    ]
+                }
+            }
+        }
+    }
+]

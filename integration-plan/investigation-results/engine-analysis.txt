@@ -1,0 +1,35 @@
+Engine Files:
+27
+
+Engine List:
+/home/mik/SEARXNG/2SEARX2COOL/engines/allmusic.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/apple_music_web.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/bandcamp.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/bandcamp_enhanced.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/base_music.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/beatport.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/deezer.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/discogs_music.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/free_music_archive.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/genius.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/genius_lyrics.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/jamendo_music.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/lastfm.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/mixcloud.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/mixcloud_enhanced.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/musicbrainz.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/musictoscrape.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/musixmatch.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/pitchfork.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/radio_paradise.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/soundcloud.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/soundcloud_enhanced.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/spotify.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/spotify_web.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/tidal_web.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/yandex_music.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/youtube_music.py
+
+Base Classes:
+/home/mik/SEARXNG/2SEARX2COOL/engines/base_music.py
+/home/mik/SEARXNG/2SEARX2COOL/engines/discogs_music.py

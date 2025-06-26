@@ -12,6 +12,9 @@ import type { LazyLoader } from './utils/LazyLoader';
 import { setupConfigIPC } from './ipc/config-handlers';
 import { setupNotificationHandlers } from './ipc/notifications';
 import { setupFileAssociationHandlers } from './ipc/fileAssociations';
+import { setupSearchHandlers } from './ipc/searchHandlers';
+import { setupPlayerHandlers } from './ipc/playerHandlers';
+import { setupLibraryHandlers } from './ipc/libraryHandlers';
 
 interface IPCDependencies {
   pluginManager: PluginManager | null;
@@ -328,6 +331,15 @@ export function setupIPC(dependencies: IPCDependencies): void {
   
   // Setup file association handlers
   setupFileAssociationHandlers();
+  
+  // Setup search handlers
+  setupSearchHandlers(deps.databaseManager);
+  
+  // Setup player handlers
+  setupPlayerHandlers();
+  
+  // Setup library handlers
+  setupLibraryHandlers(deps.databaseManager);
   
   log.info('IPC handlers set up successfully');
 }

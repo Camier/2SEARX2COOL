@@ -1,0 +1,251 @@
+services:
+  # Auth Proxy - sits in front of SearXNG
+  auth-proxy:
+    build: ./auth-proxy
+    container_name: searxng-auth-proxy
+    restart: unless-stopped
+    environment:
+      - SECRET_KEY=${AUTH_PROXY_SECRET_KEY:-dev-auth-proxy-secret}
+      - SEARXNG_URL=http://searxng:8080
+      - AUTH_SERVICE_URL=http://auth-service:5000
+      - API_SERVICE_URL=http://api-service:5001
+      - JWT_SECRET=${JWT_SECRET}
+      - REDIS_HOST=redis-cache
+      - ENV=${ENV:-development}
+    ports:
+      - "8095:8000"
+    networks:
+      - searxng
+    depends_on:
+      - searxng
+      - auth-service
+      - redis-cache
+    volumes:
+      - ./static:/app/static:ro
+
+  # SearXNG Core Service (now internal only)
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng-convivial
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
+      - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY}
+      - SEARXNG_BIND_ADDRESS=0.0.0.0:8080
+    volumes:
+      - ./searxng:/etc/searxng:rw
+      - ./plugins:/usr/local/searxng/searx/plugins/custom:ro
+      - ./themes:/usr/local/searxng/searx/static/themes/custom:ro
+    networks:
+      - searxng
+    depends_on:
+      - redis-cache
+      - redis-pubsub
+      - postgres
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Redis Cache Instance
+  redis-cache:
+    image: redis:7-alpine
+    container_name: searxng-redis-cache
+    restart: unless-stopped
+    command: redis-server --port 6379 --save 60 1 --loglevel warning
+    volumes:
+      - redis-cache-data:/data
+    networks:
+      - searxng
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+
+  # Redis Pub/Sub Instance
+  redis-pubsub:
+    image: redis:7-alpine
+    container_name: searxng-redis-pubsub
+    restart: unless-stopped
+    command: redis-server --port 6380
+    networks:
+      - searxng
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: searxng-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=searxng_convivial
+      - POSTGRES_USER=searxng
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d:ro
+    networks:
+      - searxng
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U searxng"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js WebSocket Server
+  websocket-server:
+    build: ./websocket-server
+    container_name: searxng-websocket
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REDIS_PUBSUB_HOST=redis-pubsub
+      - REDIS_PUBSUB_PORT=6380
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=searxng_convivial
+      - POSTGRES_USER=searxng
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - searxng
+    depends_on:
+      - redis-pubsub
+      - postgres
+
+  # Nginx Reverse Proxy (disabled for now - using auth-proxy directly)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: searxng-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./nginx/conf.d:/etc/nginx/conf.d:ro
+  #     - ./certbot/www:/var/www/certbot:ro
+  #     - ./certbot/conf:/etc/letsencrypt:ro
+  #   networks:
+  #     - searxng
+  #   depends_on:
+  #     - searxng
+  #     - websocket-server
+
+  # Certbot for SSL
+  certbot:
+    image: certbot/certbot
+    container_name: searxng-certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot:rw
+      - ./certbot/conf:/etc/letsencrypt:rw
+
+  # Authentication Service
+  auth-service:
+    build: ./auth-service
+    container_name: searxng-auth
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - ENV=production
+      - SECRET_KEY=${AUTH_SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=searxng_convivial
+      - POSTGRES_USER=searxng
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - REDIS_HOST=redis-cache
+      - ALLOWED_ORIGINS=http://localhost:8890,http://localhost:3000
+    networks:
+      - searxng
+    depends_on:
+      - postgres
+      - redis-cache
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # API Service
+  api-service:
+    build: ./api-service
+    container_name: searxng-api
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - ENV=production
+      - SECRET_KEY=${API_SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=searxng_convivial
+      - POSTGRES_USER=searxng
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - REDIS_CACHE_HOST=redis-cache
+      - REDIS_PUBSUB_HOST=redis-pubsub
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_SECURE=false
+      - MINIO_BUCKET=convivial-files
+      - ALLOWED_ORIGINS=http://localhost:8890
+    networks:
+      - searxng
+    depends_on:
+      - postgres
+      - redis-cache
+      - redis-pubsub
+      - minio
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5001/health').raise_for_status()"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:latest
+    container_name: searxng-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    volumes:
+      - minio-data:/data
+    networks:
+      - searxng
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+volumes:
+  redis-cache-data:
+  postgres-data:
+  minio-data:
+
+networks:
+  searxng:
+    driver: bridge

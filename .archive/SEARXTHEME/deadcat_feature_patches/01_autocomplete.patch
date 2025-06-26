@@ -1,0 +1,24 @@
+--- Add this to deadcat/base.html in the <head> section ---
+
+<!-- Autocomplete functionality -->
+{% if autocomplete %}
+<script src="{{ url_for('static', filename='js/autocomplete.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    searxng.autocompleter({
+        searchInput: document.getElementById('q'),
+        timeout: 500,
+        backend: '{{ autocomplete }}',
+        results: 10
+    });
+});
+</script>
+{% endif %}
+
+--- Update the search input field ---
+Find: <input type="search" name="q" id="q"
+Add these attributes: 
+    data-autocomplete="{{ autocomplete }}"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="none"

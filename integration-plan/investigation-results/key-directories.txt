@@ -1,0 +1,6 @@
+Virtual Environments:
+
+Configuration Directories:
+/home/mik/SEARXNG/2SEARX2COOL/config
+
+Log Directories:

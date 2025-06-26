@@ -1,0 +1,47 @@
+/home/mik/SEARXNG/2SEARX2COOL
+├── config
+├── docs
+│   ├── architecture
+│   ├── archive
+│   │   └── old-reports
+│   ├── deployment
+│   ├── development
+│   ├── music-engines
+│   ├── operational
+│   └── reports
+├── engines
+│   └── __pycache__
+├── music
+│   ├── cache
+│   ├── rate_limiter
+│   ├── tests
+│   │   └── orchestrator
+│   └── ui
+│       └── prototypes
+├── orchestrator
+│   ├── __pycache__
+│   ├── blueprints
+│   │   ├── api
+│   │   ├── auth
+│   │   ├── proxy
+│   │   └── websocket
+│   ├── config -> ../config
+│   ├── models
+│   │   └── music
+│   └── services
+├── scripts
+│   ├── archived
+│   ├── deployment
+│   ├── development
+│   │   └── tests
+│   └── utilities
+│       ├── database
+│       ├── importers
+│       └── viewers
+├── test-results
+└── tests
+    ├── engines
+    ├── integration
+    └── unit
+
+45 directories

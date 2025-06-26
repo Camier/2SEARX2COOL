@@ -1,0 +1,31 @@
+{
+  "name": "spotify-integration",
+  "id": "spotify-integration",
+  "displayName": "Spotify Integration",
+  "description": "Integrates Spotify playback and search with 2SEARX2COOL",
+  "version": "1.0.0",
+  "author": "2SEARX2COOL Team",
+  "main": "main.js",
+  "renderer": "renderer.js",
+  "permissions": [
+    "search",
+    "cache",
+    "hardware",
+    "ui",
+    "ipc"
+  ],
+  "keywords": [
+    "spotify",
+    "music",
+    "streaming",
+    "integration"
+  ],
+  "engines": {
+    "2searx2cool": ">=0.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Camier/2SEARX2COOL"
+  },
+  "license": "MIT"
+}

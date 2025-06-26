@@ -1,0 +1,147 @@
+# Searxng Convivial Instance Configuration
+# Custom settings for our digital salon
+
+use_default_settings: true
+
+general:
+  instance_name: "Digital Salon 🌟"
+  contact_url: false
+  enable_metrics: false
+
+search:
+  safe_search: 0
+  autocomplete: "duckduckgo"
+  default_lang: "all"
+  max_page: 5
+  
+ui:
+  default_locale: "en"
+  query_in_title: true
+  infinite_scroll: true
+  default_theme: "simple"
+  simple_style: "light"
+  
+  # Custom theme configuration
+  theme_args:
+    simple_style: auto
+    
+# Redis configuration for our features
+redis:
+  cache_host: "redis-cache"
+  cache_port: 6379
+  pubsub_host: "redis-pubsub"  
+  pubsub_port: 6380
+  
+# PostgreSQL for collections
+postgres:
+  host: "postgres"
+  database: "searxng_convivial"
+  user: "searxng"
+  password: "${POSTGRES_PASSWORD}"
+
+# Convivial features
+convivial:
+  max_friends: 3
+  morning_coffee_hour: 8
+  collision_window_minutes: 60
+  gift_reveal_delay_hours: 24
+  
+# Engine configuration focused on our needs
+engines:
+  # Academic engines
+  - name: google scholar
+    engine: google_scholar
+    shortcut: gs
+    categories: science
+    
+  - name: arxiv
+    engine: arxiv
+    shortcut: arx
+    categories: science
+    timeout: 6.0
+    
+  - name: pubmed
+    engine: pubmed
+    shortcut: pm
+    categories: science
+    
+  # Standard engines
+  - name: duckduckgo
+    engine: duckduckgo
+    shortcut: ddg
+    
+  - name: wikipedia
+    engine: wikipedia
+    shortcut: wp
+    base_url: 'https://{language}.wikipedia.org/'
+    
+  # Music
+  - name: bandcamp
+    engine: bandcamp
+    shortcut: bc
+    categories: music
+    
+  - name: soundcloud
+    engine: soundcloud
+    shortcut: sc
+    categories: music
+    
+  - name: genius
+    engine: genius
+    shortcut: gen
+    categories: music
+    
+  - name: youtube
+    engine: youtube_noapi
+    shortcut: yt
+    categories: videos
+    
+  # File search
+  - name: library genesis
+    engine: xpath
+    search_url: https://libgen.is/search.php?req={query}&lg_topic=libgen&open=0&view=simple&res=25&phrase=1&column=def
+    url_xpath: //h3/a/@href
+    title_xpath: //h3/a
+    content_xpath: //td[@colspan="2"]
+    categories: files
+    shortcut: lg
+    timeout: 7.0
+    disabled: false
+    about:
+      website: https://libgen.is/
+      wikidata_id: Q22017206
+      official_api_documentation: null
+      use_official_api: false
+      require_api_key: false
+      results: HTML
+    
+  # Additional useful engines
+  - name: openstreetmap
+    engine: openstreetmap
+    shortcut: osm
+    
+  - name: wikidata
+    engine: wikidata
+    shortcut: wd
+    timeout: 3.0
+    weight: 2
+    
+# Enabled plugins
+enabled_plugins:
+  - 'oa_doi_rewrite'
+  - 'ahmia_filter'
+  
+# Server settings
+server:
+  bind_address: "0.0.0.0"
+  port: 8080
+  secret_key: "${SEARXNG_SECRET_KEY}"
+  base_url: "https://${SEARXNG_HOSTNAME}/"
+  image_proxy: true
+  
+# Privacy settings  
+privacy:
+  autocomplete:
+    duckduckgo: true
+    google: false
+  query_log: false

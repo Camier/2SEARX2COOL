@@ -1,0 +1,24 @@
+{
+  "responseStyle": {
+    "format": "technical",
+    "showExamples": true,
+    "includeTests": true
+  },
+  "customCommands": {
+    "/engine": "Create new search engine for: $ARGUMENTS",
+    "/test-search": "Test search query: $ARGUMENTS",
+    "/redis": "Check Redis for: $ARGUMENTS",
+    "/perf": "Performance analysis for engine: $ARGUMENTS"
+  },
+  "autoActions": {
+    "onFileEdit": {
+      "engines/*.py": "Suggest running engine tests",
+      "settings.yml": "Validate YAML syntax"
+    }
+  },
+  "toolPriorities": [
+    "Grep",
+    "Edit",
+    "Bash"
+  ]
+}

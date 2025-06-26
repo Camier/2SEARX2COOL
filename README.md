@@ -1,496 +1,480 @@
-# 2SEARX2COOL 🎵
+# 2SEARX2COOL 🎵 - Privacy-First Music Search Platform
 
 <div align="center">
   <img src="build/icon.png" alt="2SEARX2COOL Logo" width="128" height="128">
   
   [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+  [![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python)](https://www.python.org/)
   [![Electron](https://img.shields.io/badge/Electron-30.0.0-47848F?logo=electron)](https://www.electronjs.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.4.0-blue?logo=typescript)](https://www.typescriptlang.org/)
   [![Node.js](https://img.shields.io/badge/Node.js-18.0.0+-green?logo=node.js)](https://nodejs.org/)
-  [![Build Status](https://img.shields.io/github/workflow/status/Camier/2SEARX2COOL/CI)](https://github.com/Camier/2SEARX2COOL/actions)
-  [![Coverage](https://img.shields.io/codecov/c/github/Camier/2SEARX2COOL)](https://codecov.io/gh/Camier/2SEARX2COOL)
   
-  **Native desktop experience for SearXNG-Cool with 27+ music search engines**
+  **Privacy-focused music search with 27+ engines - Available as Web Service & Desktop App**
   
-  [Features](#features) • [Installation](#installation) • [Usage](#usage) • [Development](#development) • [Contributing](CONTRIBUTING.md) • [Documentation](docs/)
+  [Features](#features) • [Quick Start](#quick-start) • [Installation](#installation) • [Architecture](#architecture) • [Development](#development) • [Documentation](docs/)
 </div>
 
 ## 🌟 Overview
 
-2SEARX2COOL is a powerful, privacy-focused desktop application that brings the capabilities of [SearXNG-Cool](https://github.com/Camier/searxng-cool) to your desktop with enhanced features for music discovery. Built with Electron and TypeScript, it offers offline-first architecture, hardware integration, and a comprehensive plugin system.
+2SEARX2COOL is a powerful, privacy-focused music search platform that extends [SearXNG](https://github.com/searxng/searxng) with specialized music search capabilities. It offers **dual-mode operation**: run it as a web service for server deployments or as a native desktop application with enhanced features.
+
+### 🎯 Key Highlights
+
+- **🎵 27+ Music Search Engines**: Comprehensive coverage of music platforms
+- **🔐 Privacy-First**: No tracking, no data collection, no ads
+- **⚡ High Performance**: Redis caching, parallel searches, optimized responses
+- **🖥️ Dual-Mode**: Web service OR desktop application
+- **🔌 Extensible**: Plugin system for custom engines and features
+- **🌐 Self-Hostable**: Full control over your search infrastructure
 
 ## ✨ Features
 
-### 🎵 Music Search Excellence
-- **27+ Integrated Music Engines**: Comprehensive coverage including Spotify, Apple Music, SoundCloud, Bandcamp, and more
-- **Advanced Search Filters**: By genre, year, duration, quality, and custom parameters
-- **Smart Result Aggregation**: Intelligent deduplication and ranking across multiple sources
-- **Offline-First Architecture**: Search history, cached results, and offline mode support
+### 🎵 Music Search Capabilities
+- **Comprehensive Engine Coverage**: Spotify, Apple Music, SoundCloud, Bandcamp, YouTube Music, and 20+ more
+- **Advanced Search Features**: 
+  - Multi-engine parallel search
+  - Intelligent result aggregation
+  - Duplicate detection and merging
+  - Metadata enrichment
+- **Content Types**: Songs, albums, artists, playlists, lyrics, music videos
+- **Smart Caching**: Redis-based caching for instant repeated searches
 
-### 🚀 Performance & Optimization
-- **Lazy Loading System**: 70% faster startup with on-demand module loading
-- **Memory Management**: Intelligent caching with automatic optimization
-- **Search Caching**: 90% cache hit rate for frequent searches  
-- **Bundle Optimization**: 40% smaller application size with code splitting
+### 🚀 Operating Modes
 
-### 🔌 Hardware Integration
-- **MIDI Support**: Connect MIDI controllers for music control
-- **Audio Analysis**: Real-time visualization and BPM detection
-- **Media Keys**: System-wide media control integration
+#### 🌐 **Web Service Mode**
+Perfect for server deployments and multi-user scenarios:
+- SearXNG instance with custom music engines
+- Flask/SocketIO orchestrator for real-time features
+- PostgreSQL for user data and preferences
+- Redis for high-performance caching
+- RESTful API for integration
 
-### 🧩 Plugin System
-- **Extensible Architecture**: Add custom search engines and features
-- **Plugin Marketplace**: Discover and install community plugins
-- **Secure Sandboxing**: Isolated plugin execution environment
-- **Hot Reload**: Develop plugins with instant feedback
+#### 🖥️ **Desktop Application Mode**
+Native desktop experience with Electron:
+- Offline-first architecture
+- Hardware acceleration
+- System tray integration
+- Global keyboard shortcuts
+- Plugin marketplace
+- Auto-updates
 
-### 🔒 Privacy & Security
-- **No Tracking**: Zero telemetry or user tracking
-- **Local Processing**: All data processed on your device
-- **Encrypted Storage**: Secure credential management
-- **Tor Support**: Optional routing through Tor network
+#### 🔄 **Hybrid Mode** (Default)
+Best of both worlds:
+- Desktop app with embedded web service
+- All-in-one installation
+- Local-first with cloud capabilities
+- Seamless mode switching
 
-### 🎨 User Experience
-- **Modern UI**: Clean, responsive interface with dark/light themes
-- **Keyboard Shortcuts**: Comprehensive keyboard navigation
-- **Multi-Window Support**: Open multiple search windows
-- **Cross-Platform**: Windows, macOS, and Linux support
+### 🔧 Technical Features
+- **JSON-RPC Bridge**: Efficient communication between components
+- **Unified Configuration**: Single source of truth for all settings
+- **Plugin System**: Extend functionality with JavaScript/TypeScript plugins
+- **Security**: Context isolation, CSP headers, encrypted storage
+- **Development Tools**: Hot reload, debugging tools, test automation
+
+## 🚀 Quick Start
+
+### Option 1: Desktop Application (Recommended for End Users)
+
+```bash
+# Download the latest release for your platform
+# Windows: 2SEARX2COOL-Setup-x.x.x.exe
+# macOS: 2SEARX2COOL-x.x.x.dmg
+# Linux: 2SEARX2COOL-x.x.x.AppImage
+
+# Or build from source:
+git clone https://github.com/Camier/2SEARX2COOL.git
+cd 2SEARX2COOL/2SEARX2COOL-FINAL-INTEGRATED
+npm install
+npm run dev
+```
+
+### Option 2: Web Service (For Server Deployments)
+
+```bash
+# Clone and navigate to the project
+git clone https://github.com/Camier/2SEARX2COOL.git
+cd 2SEARX2COOL/2SEARX2COOL-FINAL-INTEGRATED
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start all services
+./scripts/start-unified.sh --service
+```
+
+### Option 3: Docker (Quick Deploy)
+
+```bash
+# Using Docker Compose
+docker-compose up -d
+
+# Access the web interface
+open http://localhost:8888
+```
 
 ## 📋 System Requirements
 
-### Minimum Requirements
+### Desktop Application
 - **OS**: Windows 10+, macOS 10.13+, Ubuntu 20.04+
-- **RAM**: 4GB
-- **Storage**: 500MB available space
-- **Node.js**: 18.0.0 or higher (for development)
+- **RAM**: 4GB minimum, 8GB recommended
+- **Storage**: 500MB for application, 1GB+ for cache
+- **Internet**: Required for search functionality
 
-### Recommended Requirements
-- **RAM**: 8GB or more
-- **Storage**: 1GB available space
-- **Internet**: Broadband connection for streaming
+### Web Service
+- **OS**: Any Linux distribution
+- **RAM**: 2GB minimum, 4GB recommended
+- **Python**: 3.8 or higher
+- **Redis**: 6.0 or higher
+- **PostgreSQL**: 12 or higher (optional)
 
-## 🚀 Installation
+## 🏗️ Architecture
 
-### 📦 Pre-built Binaries
+### Dual-Mode Architecture
 
-Download the latest release for your platform:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        2SEARX2COOL                          │
+├─────────────────────────┬───────────────────────────────────┤
+│    Desktop Mode         │         Web Service Mode          │
+├─────────────────────────┼───────────────────────────────────┤
+│ ┌──────────────────┐   │   ┌────────────────────────┐      │
+│ │  Electron App    │   │   │   Web Browser          │      │
+│ │  - Native UI     │   │   │   - Standard UI        │      │
+│ │  - Offline Mode  │   │   │   - Multi-user         │      │
+│ │  - Hardware Int. │   │   │   - Remote Access      │      │
+│ └────────┬─────────┘   │   └───────────┬────────────┘      │
+│          │             │                │                   │
+│          ▼             │                ▼                   │
+│ ┌──────────────────┐   │   ┌────────────────────────┐      │
+│ │  JSON-RPC Bridge │   │   │   HTTP/WebSocket       │      │
+│ └────────┬─────────┘   │   └───────────┬────────────┘      │
+└──────────┼─────────────┴────────────────┼───────────────────┘
+           │                              │
+           ▼                              ▼
+┌──────────────────────────────────────────────────────────────┐
+│                    Core Services Layer                        │
+├──────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌──────────────┐  ┌──────────────────┐   │
+│  │   SearXNG   │  │ Orchestrator │  │  Engine Bridge   │   │
+│  │  Port 8888  │  │  Port 8889   │  │  (Python/Node)   │   │
+│  └──────┬──────┘  └──────┬───────┘  └────────┬─────────┘   │
+│         │                │                    │              │
+│         ▼                ▼                    ▼              │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │            27+ Music Search Engines                  │    │
+│  │  Spotify • Apple Music • SoundCloud • Bandcamp •    │    │
+│  │  YouTube Music • Deezer • Tidal • Last.fm • More    │    │
+│  └─────────────────────────────────────────────────────┘    │
+│                           │                                  │
+│         ┌─────────────────┴──────────────────┐              │
+│         ▼                                    ▼              │
+│  ┌──────────────┐                    ┌──────────────┐       │
+│  │    Redis     │                    │  PostgreSQL  │       │
+│  │   Caching    │                    │   Database   │       │
+│  └──────────────┘                    └──────────────┘       │
+└──────────────────────────────────────────────────────────────┘
+```
 
-#### Windows
-- [2SEARX2COOL-Setup-0.2.0.exe](https://github.com/Camier/2SEARX2COOL/releases) - Installer (recommended)
-- [2SEARX2COOL-0.2.0-win.zip](https://github.com/Camier/2SEARX2COOL/releases) - Portable version
+### Component Overview
 
-#### macOS
-- [2SEARX2COOL-0.2.0.dmg](https://github.com/Camier/2SEARX2COOL/releases) - Universal binary (Intel + Apple Silicon)
-- [2SEARX2COOL-0.2.0-mac.zip](https://github.com/Camier/2SEARX2COOL/releases) - ZIP archive
+1. **Frontend Layer**
+   - Electron App: Native desktop experience with offline capabilities
+   - Web Browser: Standard web interface for remote access
 
-#### Linux
-- [2SEARX2COOL-0.2.0.AppImage](https://github.com/Camier/2SEARX2COOL/releases) - AppImage (recommended)
-- [2SEARX2COOL-0.2.0.deb](https://github.com/Camier/2SEARX2COOL/releases) - Debian/Ubuntu
-- [2SEARX2COOL-0.2.0.rpm](https://github.com/Camier/2SEARX2COOL/releases) - Fedora/RHEL
+2. **Communication Layer**
+   - JSON-RPC Bridge: Efficient protocol for desktop mode
+   - HTTP/WebSocket: Standard web protocols for service mode
 
-### 🔧 Build from Source
+3. **Core Services**
+   - SearXNG: Privacy-respecting metasearch engine
+   - Orchestrator: Manages searches, aggregation, and caching
+   - Engine Bridge: Connects Python engines with Node.js frontend
 
+4. **Search Engines**
+   - 27+ specialized music search engines
+   - Parallel execution for fast results
+   - Intelligent result aggregation
+
+5. **Data Layer**
+   - Redis: High-performance caching
+   - PostgreSQL: User data and preferences (optional)
+
+## 🛠️ Installation
+
+### Desktop Application
+
+#### Pre-built Binaries
+Download from [Releases](https://github.com/Camier/2SEARX2COOL/releases):
+- **Windows**: `2SEARX2COOL-Setup-x.x.x.exe` or `.zip`
+- **macOS**: `2SEARX2COOL-x.x.x.dmg` or `.zip`
+- **Linux**: `2SEARX2COOL-x.x.x.AppImage`, `.deb`, or `.rpm`
+
+#### Build from Source
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/Camier/2SEARX2COOL.git
-cd 2SEARX2COOL/2SEARX2COOL-refactored
+cd 2SEARX2COOL/2SEARX2COOL-FINAL-INTEGRATED
 
 # Install dependencies
 npm install
+pip install -r requirements.txt
 
-# Run in development mode
+# Development mode
 npm run dev
 
 # Build for production
 npm run build
-
-# Package for your platform
 npm run dist
-
-# Package for all platforms
-npm run dist:all
 ```
 
-### 🐳 Docker
+### Web Service
 
+#### Manual Installation
 ```bash
-# Run with Docker
-docker run -d \
-  --name 2searx2cool \
-  -p 3000:3000 \
-  -v ~/.2searx2cool:/data \
-  camier/2searx2cool:latest
+# Clone repository
+git clone https://github.com/Camier/2SEARX2COOL.git
+cd 2SEARX2COOL/2SEARX2COOL-FINAL-INTEGRATED
 
-# Docker Compose
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your settings
+
+# Initialize database (if using PostgreSQL)
+python scripts/create_database_schema.py
+
+# Start services
+./scripts/start-unified.sh --service
+```
+
+#### Docker Installation
+```bash
+# Using Docker Compose
 docker-compose up -d
+
+# Using Docker directly
+docker build -t 2searx2cool .
+docker run -d -p 8888:8888 -p 8889:8889 2searx2cool
 ```
 
-## 🎯 Usage
+#### Production Deployment
+See [Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md) for:
+- Nginx configuration
+- SSL/TLS setup
+- Systemd services
+- Performance tuning
+- Security hardening
 
-### Basic Search
+## ⚙️ Configuration
 
-1. **Launch** 2SEARX2COOL
-2. **Enter** your search query in the search bar
-3. **Select** engines or use the default selection
-4. **Press** Enter or click Search
+### Unified Configuration System
+2SEARX2COOL uses a unified configuration system that works across both modes:
 
-### Advanced Features
-
-#### ⌨️ Keyboard Shortcuts
-
-| Shortcut | Action | Context |
-|----------|--------|---------|
-| `Ctrl/Cmd + K` | Focus search bar | Global |
-| `Ctrl/Cmd + ,` | Open settings | Global |
-| `Ctrl/Cmd + Shift + P` | Command palette | Global |
-| `Ctrl/Cmd + T` | New search tab | Global |
-| `Ctrl/Cmd + L` | Clear search | Search |
-| `Ctrl/Cmd + D` | Download result | Results |
-| `Ctrl/Cmd + B` | Bookmark result | Results |
-
-#### 🔍 Search Operators
-
-```
-artist:"Pink Floyd"              # Exact artist match
-genre:rock year:1970..1980      # Genre and year range
-duration:>300                   # Songs longer than 5 minutes
-quality:lossless               # High-quality audio only
-source:bandcamp                # Search specific source
--remix                         # Exclude remixes
-```
-
-#### 🎛️ Plugin Management
-
-Access the plugin manager:
-- Via menu: `Settings > Plugins`
-- Via shortcut: `Ctrl/Cmd + Shift + X`
-- Via command palette: Type "plugins"
-
-## 🛠️ Development
-
-### 📁 Project Structure
-
-```
-2SEARX2COOL-refactored/
-├── src/
-│   ├── main/              # Main process (Node.js)
-│   │   ├── core/          # Core application logic
-│   │   ├── plugins/       # Plugin system implementation
-│   │   ├── search/        # Search optimization
-│   │   ├── hardware/      # Hardware integration
-│   │   ├── database/      # Database management
-│   │   ├── cache/         # Caching system
-│   │   └── errors/        # Error handling
-│   ├── renderer/          # Renderer process (React)
-│   │   ├── pages/         # Application pages
-│   │   ├── components/    # React components
-│   │   ├── hooks/         # Custom React hooks
-│   │   └── utils/         # Frontend utilities
-│   ├── preload/           # Preload scripts
-│   └── shared/            # Shared types and constants
-├── test/                  # Test suites
-│   ├── unit/             # Unit tests
-│   ├── integration/      # Integration tests
-│   └── e2e/              # End-to-end tests
-├── docs/                  # Documentation
-├── scripts/               # Build and utility scripts
-├── resources/             # Application resources
-└── build/                 # Build configuration
-```
-
-### 🏗️ Architecture
-
-```mermaid
-graph TB
-    A[Main Process] --> B[IPC Bridge]
-    B --> C[Renderer Process]
-    A --> D[Plugin System]
-    A --> E[Hardware Layer]
-    A --> F[Database]
-    A --> G[Search Engine]
-    
-    D --> H[Main Plugins]
-    D --> I[Renderer Plugins]
-    
-    E --> J[MIDI]
-    E --> K[Audio]
-    
-    G --> L[Cache Layer]
-    G --> M[Result Aggregator]
-```
-
-### 🔧 Development Setup
-
-1. **Prerequisites**
-   ```bash
-   # Install Node.js 18+
-   # Install Python 3.8+ (for node-gyp)
-   # Install build tools (Windows: windows-build-tools, macOS: Xcode, Linux: build-essential)
-   ```
-
-2. **Environment Setup**
-   ```bash
-   # Copy environment template
-   cp .env.example .env
-   
-   # Configure your environment
-   # Edit .env with your settings
-   ```
-
-3. **Development Commands**
-   ```bash
-   # Start development server with hot reload
-   npm run dev
-   
-   # Run type checking
-   npm run typecheck
-   
-   # Run linting
-   npm run lint
-   
-   # Format code
-   npm run format
-   
-   # Run tests
-   npm test
-   
-   # Run specific test suite
-   npm run test:unit
-   npm run test:integration
-   npm run test:e2e
-   
-   # Generate coverage report
-   npm run test:coverage
-   ```
-
-4. **Building**
-   ```bash
-   # Build for development
-   npm run build
-   
-   # Build with optimizations
-   npm run build:optimized
-   
-   # Analyze bundle size
-   npm run analyze:bundle
-   
-   # Package for distribution
-   npm run dist
-   ```
-
-### 🧪 Testing
-
-#### Running Tests
-
-```bash
-# All tests
-npm test
-
-# Unit tests with UI
-npm run test:ui
-
-# E2E tests with UI
-npm run test:e2e:ui
-
-# Watch mode
-npm run test:watch
-
-# Debug mode
-npm run test:debug
-```
-
-#### Writing Tests
-
-```typescript
-// Unit test example
-import { describe, it, expect, vi } from 'vitest';
-import { SearchOptimizer } from '@/main/search/SearchOptimizer';
-
-describe('SearchOptimizer', () => {
-  it('should cache search results', async () => {
-    const optimizer = new SearchOptimizer(mockCache, mockDb);
-    const searchFn = vi.fn().mockResolvedValue(mockResults);
-    
-    // First call - not cached
-    const result1 = await optimizer.optimizeSearch(query, searchFn);
-    expect(result1.fromCache).toBe(false);
-    expect(searchFn).toHaveBeenCalledOnce();
-    
-    // Second call - cached
-    const result2 = await optimizer.optimizeSearch(query, searchFn);
-    expect(result2.fromCache).toBe(true);
-    expect(searchFn).toHaveBeenCalledOnce(); // Not called again
-  });
-});
-```
-
-### 🔌 Plugin Development
-
-#### Plugin Structure
-
-```typescript
-// my-plugin/index.ts
-import { Plugin, PluginContext } from '2searx2cool';
-
-export default class MyPlugin implements Plugin {
-  id = 'my-plugin';
-  name = 'My Awesome Plugin';
-  version = '1.0.0';
-  description = 'Adds awesome features';
-  
-  async activate(context: PluginContext) {
-    // Register search engine
-    context.searchEngines.register({
-      id: 'my-engine',
-      name: 'My Search Engine',
-      icon: 'path/to/icon.png',
-      search: async (query, options) => {
-        // Your search implementation
-        return results;
-      }
-    });
-    
-    // Add UI components
-    context.ui.addMenuItem({
-      id: 'my-action',
-      label: 'My Custom Action',
-      accelerator: 'Ctrl+Shift+M',
-      click: () => {
-        // Action handler
-      }
-    });
-    
-    // Listen to events
-    context.events.on('search:complete', (results) => {
-      // Process results
-    });
-  }
-  
-  async deactivate() {
-    // Cleanup
+```yaml
+# config/unified-config.json - Main configuration
+{
+  "mode": "hybrid",  # service, desktop, or hybrid
+  "service": {
+    "searxng": {
+      "port": 8888,
+      "engines": ["spotify", "soundcloud", "bandcamp", ...]
+    },
+    "orchestrator": {
+      "port": 8889,
+      "redis_url": "redis://localhost:6379"
+    }
+  },
+  "desktop": {
+    "autoStart": false,
+    "minimizeToTray": true,
+    "theme": "system"
   }
 }
 ```
 
-#### Plugin API Reference
-
-See the complete [Plugin API Documentation](docs/PLUGIN_API.md).
-
-## 📊 Performance
-
-### Optimization Features
-
-- **Lazy Loading**: Modules loaded on-demand with priority system
-- **Memory Management**: Automatic optimization with configurable thresholds
-- **Search Caching**: LRU cache with compression for large results
-- **Code Splitting**: Dynamic imports for route-based splitting
-- **Asset Optimization**: Image compression, minification, and tree shaking
-
-### Benchmarks
-
-| Metric | Baseline | Optimized | Improvement |
-|--------|----------|-----------|-------------|
-| Startup Time | 6.8s | 2.0s | **70% faster** |
-| Memory Usage (Idle) | 600MB | 300MB | **50% reduction** |
-| Search Response (Cached) | 1000ms | 100ms | **90% faster** |
-| Bundle Size | 85MB | 50MB | **40% smaller** |
-| First Paint | 3.2s | 1.1s | **65% faster** |
-
-### Performance Monitoring
-
+### Environment Variables
 ```bash
-# Enable performance logging
-LOG_STARTUP_PERFORMANCE=true npm run dev
+# Required for some music engines
+DISCOGS_API_TOKEN=your_token
+JAMENDO_API_KEY=your_key
 
-# Generate performance report
-npm run perf:report
+# Database (optional)
+DATABASE_URL=postgresql://user:pass@localhost/dbname
 
-# Memory profiling
-npm run dev -- --inspect
+# Operating mode
+APP_MODE=hybrid  # service, desktop, or hybrid
 ```
 
-## 🔒 Security
+### Music Engine Configuration
+See [config/music_engines.yml](config/music_engines.yml) for engine-specific settings.
 
-### Security Features
+## 🎮 Usage
 
-- **Content Security Policy**: Strict CSP headers
-- **Context Isolation**: Isolated renderer processes
-- **Secure IPC**: Validated inter-process communication
-- **Encrypted Storage**: AES-256 for sensitive data
-- **Auto-updates**: Signed updates with rollback protection
+### Desktop Application
 
-### Reporting Security Issues
+1. **Launch** the application
+2. **Search** using the search bar or `Ctrl/Cmd + K`
+3. **Filter** results by source, type, or quality
+4. **Export** results or integrate with music players
 
-Please see our [Security Policy](SECURITY.md) for reporting vulnerabilities.
+#### Keyboard Shortcuts
+- `Ctrl/Cmd + K`: Focus search
+- `Ctrl/Cmd + ,`: Settings
+- `Ctrl/Cmd + T`: New tab
+- `Ctrl/Cmd + Shift + P`: Command palette
 
-## 🤝 Contributing
+### Web Service
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+1. **Access** `http://localhost:8888` in your browser
+2. **Search** using the web interface
+3. **Use API** for programmatic access:
+   ```bash
+   curl "http://localhost:8888/search?q=pink+floyd&engines=spotify,soundcloud&format=json"
+   ```
 
-### Quick Contribution Guide
+### Search Syntax
+```
+# Basic search
+pink floyd
 
-1. **Fork** the repository
-2. **Create** your feature branch (`git checkout -b feature/AmazingFeature`)
-3. **Commit** your changes (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** to the branch (`git push origin feature/AmazingFeature`)
-5. **Open** a Pull Request
+# Specific engine
+!spotify dark side of the moon
 
-### Development Guidelines
+# Advanced operators
+artist:"Pink Floyd" album:"The Wall"
+genre:rock year:1979
+duration:>300 quality:lossless
+```
 
-- Follow the [TypeScript Style Guide](docs/STYLE_GUIDE.md)
-- Write tests for new features
-- Update documentation as needed
-- Ensure all tests pass before submitting PR
-- Add yourself to [CONTRIBUTORS.md](CONTRIBUTORS.md)
+## 🔌 Plugin System
 
-## 📜 License
+### Creating a Plugin
+```typescript
+// my-plugin/index.ts
+import { Plugin, PluginContext } from '2searx2cool';
 
-This project is licensed under the **GNU Affero General Public License v3.0** - see the [LICENSE](LICENSE) file for details.
+export default class MyMusicPlugin implements Plugin {
+  id = 'my-music-plugin';
+  name = 'My Music Plugin';
+  version = '1.0.0';
+  
+  async activate(context: PluginContext) {
+    // Add custom search engine
+    context.searchEngines.register({
+      id: 'my-engine',
+      name: 'My Music Engine',
+      search: async (query) => {
+        // Implementation
+        return results;
+      }
+    });
+  }
+}
+```
 
-### Third-party Licenses
+### Installing Plugins
+1. Via UI: Settings → Plugins → Browse
+2. Via CLI: `npm run plugin:install <plugin-name>`
+3. Manual: Copy to `plugins/` directory
 
-- Electron: MIT License
-- React: MIT License
-- TypeScript: Apache-2.0 License
-- See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for complete list
+## 🧪 Development
 
-## 🙏 Acknowledgments
+### Project Structure
+```
+2SEARX2COOL-FINAL-INTEGRATED/
+├── src/                    # TypeScript/React source
+│   ├── main/              # Electron main process
+│   ├── renderer/          # React UI
+│   └── preload/           # Preload scripts
+├── engines/               # Python search engines
+├── engine-bridge/         # JSON-RPC bridge
+├── orchestrator/          # Flask backend
+├── config/                # Configuration files
+├── scripts/               # Utility scripts
+└── test/                  # Test suites
+```
 
-- [SearXNG](https://github.com/searxng/searxng) - The privacy-respecting metasearch engine
-- [SearXNG-Cool](https://github.com/Camier/searxng-cool) - Enhanced music search capabilities
-- [Electron](https://www.electronjs.org/) - Cross-platform desktop framework
-- [YouTube Music Desktop](https://github.com/th-ch/youtube-music) - Plugin architecture inspiration
-- All our amazing [contributors](CONTRIBUTORS.md)
+### Development Workflow
+```bash
+# Install dependencies
+npm install
+pip install -r requirements.txt
+
+# Run in development mode
+npm run dev
+
+# Run tests
+npm test
+python -m pytest
+
+# Build for production
+npm run build
+npm run dist
+```
+
+### Testing
+- Unit tests: `npm run test:unit`
+- Integration tests: `npm run test:integration`
+- E2E tests: `npm run test:e2e`
+- Python tests: `pytest tests/`
 
 ## 📚 Documentation
 
-- [User Guide](docs/USER_GUIDE.md)
-- [Plugin Development](docs/PLUGIN_DEVELOPMENT.md)
-- [API Reference](docs/API_REFERENCE.md)
 - [Architecture Overview](docs/ARCHITECTURE.md)
-- [Performance Guide](docs/PERFORMANCE_OPTIMIZATION.md)
+- [API Documentation](docs/api/README.md)
+- [Plugin Development](docs/PLUGIN_DEVELOPMENT.md)
+- [Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md)
+- [Configuration Guide](config/unified/README.md)
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 
-## 🔗 Links
+## 🤝 Contributing
 
-- **Homepage**: [https://github.com/Camier/2SEARX2COOL](https://github.com/Camier/2SEARX2COOL)
-- **Releases**: [https://github.com/Camier/2SEARX2COOL/releases](https://github.com/Camier/2SEARX2COOL/releases)
-- **Issue Tracker**: [https://github.com/Camier/2SEARX2COOL/issues](https://github.com/Camier/2SEARX2COOL/issues)
-- **Discussions**: [https://github.com/Camier/2SEARX2COOL/discussions](https://github.com/Camier/2SEARX2COOL/discussions)
-- **Wiki**: [https://github.com/Camier/2SEARX2COOL/wiki](https://github.com/Camier/2SEARX2COOL/wiki)
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md).
 
-## 📈 Project Status
+### Quick Start for Contributors
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/Camier/2SEARX2COOL)
-![GitHub commits since latest release](https://img.shields.io/github/commits-since/Camier/2SEARX2COOL/latest)
-![GitHub contributors](https://img.shields.io/github/contributors/Camier/2SEARX2COOL)
-![GitHub issues](https://img.shields.io/github/issues/Camier/2SEARX2COOL)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/Camier/2SEARX2COOL)
+## 🔒 Security
+
+- No user tracking or telemetry
+- All searches are private
+- Optional Tor support
+- Encrypted credential storage
+- Regular security updates
+
+Report security issues to: security@example.com
+
+## 📜 License
+
+This project is licensed under the **GNU Affero General Public License v3.0** - see [LICENSE](LICENSE).
+
+## 🙏 Acknowledgments
+
+- [SearXNG](https://github.com/searxng/searxng) - Privacy-respecting metasearch engine
+- [Electron](https://www.electronjs.org/) - Cross-platform desktop framework
+- All our [contributors](CONTRIBUTORS.md)
+
+## 📞 Support
+
+- [Issue Tracker](https://github.com/Camier/2SEARX2COOL/issues)
+- [Discussions](https://github.com/Camier/2SEARX2COOL/discussions)
+- [Wiki](https://github.com/Camier/2SEARX2COOL/wiki)
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by the 2SEARX2COOL community</sub>
+  <sub>Built with ❤️ for privacy and music</sub>
   <br>
   <sub>Making music search private, powerful, and delightful</sub>
 </div>

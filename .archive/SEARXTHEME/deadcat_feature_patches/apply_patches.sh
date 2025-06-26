@@ -1,0 +1,21 @@
+#!/bin/bash
+# Apply feature patches to deadcat theme
+
+echo "Applying feature patches to deadcat theme..."
+echo ""
+echo "This script will guide you through adding each feature."
+echo "You'll need to manually edit the files, but this shows exactly what to add."
+echo ""
+echo "Patches available:"
+echo "1. 01_autocomplete.patch - Adds autocomplete functionality"
+echo "2. 02_categories.patch - Adds category selection"
+echo "3. 03_time_range.patch - Adds time and language filters"
+echo "4. 04_calculator.patch - Adds calculator result display"
+echo ""
+echo "To view a patch: cat /home/mik/deadcat_feature_patches/[patch_name]"
+echo ""
+echo "Files to edit:"
+echo "- base.html (for autocomplete)"
+echo "- results.html (for categories, filters, calculator)"
+echo ""
+echo "Remember to restart SearXNG after making changes!"

@@ -1,0 +1,762 @@
+/* ALFREDISGONE DEADCAT THEME v4.0 - Harmonized Terminal Theme */
+
+/* =========================== */
+/* 1. CSS Variables & Reset    */
+/* =========================== */
+:root {
+    /* Terminal Color Palette */
+    --terminal-black: #000000;
+    --terminal-green: #00ff00;
+    --matrix-green: #00ff41;
+    --phosphor-green: #33ff00;
+    --terminal-amber: #ffb000;
+    --terminal-red: #ff0040;
+    --terminal-cyan: #00ffff;
+    --terminal-blue: #00b4ff;
+    --terminal-magenta: #ff00ff;
+    --terminal-dim-green: rgba(0, 255, 0, 0.7);
+    --terminal-bg: #0a0a0a;
+    --terminal-border: #00ff00;
+    
+    /* Readability System Variables */
+    --animation-speed: 1;
+    --glow-intensity: 1;
+    --particle-opacity: 1;
+    --text-shadow-layers: 4;
+    --background-effects: 1;
+    --matrix-opacity: 0.15;
+    --scanline-opacity: 1;
+    
+    --font-mono: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+}
+
+/* Readability Mode: Balanced */
+body.readability-balanced {
+    --animation-speed: 0.5;
+    --glow-intensity: 0.6;
+    --particle-opacity: 0.5;
+    --text-shadow-layers: 2;
+    --background-effects: 0.7;
+    --matrix-opacity: 0.08;
+    --scanline-opacity: 0.5;
+}
+
+/* Readability Mode: High */
+body.readability-high {
+    --animation-speed: 0;
+    --glow-intensity: 0.3;
+    --particle-opacity: 0;
+    --text-shadow-layers: 1;
+    --background-effects: 0;
+    --matrix-opacity: 0;
+    --scanline-opacity: 0;
+}
+
+/* Global Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================== */
+/* 2. Base Styles              */
+/* =========================== */
+html {
+    font-size: 14px;
+}
+
+body {
+    background: var(--terminal-black) !important;
+    color: var(--terminal-green) !important;
+    font-family: var(--font-mono) !important;
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Hide SearxNG default elements */
+#search_header, .search_categories, .search_filters,
+#sidebar, #pagination_top, #pagination_bottom,
+.infobox, .suggestions, #advanced-search-container,
+#categories, #apis, .github-issue-button,
+.instance, .return-button, .favicon,
+#search_url, #apis, .well, .engines,
+.result-default img, .thumbnail,
+#results_loader, .loader,
+.search_box .visually-hidden,
+.category label span,
+body.theme-auto, body.style-auto {
+    display: none !important;
+}
+
+/* Prevent theme-auto conflicts */
+body {
+    background: var(--terminal-black) !important;
+    color: var(--terminal-green) !important;
+}
+
+/* =========================== */
+/* 3. Terminal Effects         */
+/* =========================== */
+
+/* Matrix Rain Canvas */
+#matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    opacity: var(--matrix-opacity);
+}
+
+/* CRT Monitor Effect */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, transparent 0%, transparent 60%, rgba(0, 0, 0, 0.1) 90%, rgba(0, 0, 0, 0.4) 100%);
+    pointer-events: none;
+    z-index: 10000;
+    opacity: var(--background-effects);
+}
+
+/* Scanlines */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 255, 0, 0.03) 2px,
+        rgba(0, 255, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: var(--scanline-opacity);
+    animation: scanlines calc(8s * var(--animation-speed)) linear infinite;
+}
+
+@keyframes scanlines {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(10px); }
+}
+
+/* Phosphor Glow */
+@keyframes phosphorGlow {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 1; }
+}
+
+/* =========================== */
+/* 4. Text Shadow System       */
+/* =========================== */
+
+/* Dynamic text shadows based on layers */
+.text-glow-1 {
+    text-shadow: 0 0 5px currentColor;
+}
+
+.text-glow-2 {
+    text-shadow: 0 0 5px currentColor,
+                 0 0 10px currentColor;
+}
+
+.text-glow-3 {
+    text-shadow: 0 0 5px currentColor,
+                 0 0 10px currentColor,
+                 0 0 15px currentColor;
+}
+
+.text-glow-4 {
+    text-shadow: 0 0 5px currentColor,
+                 0 0 10px currentColor,
+                 0 0 15px currentColor,
+                 0 0 20px currentColor;
+}
+
+/* Apply based on variable */
+body:not(.readability-high) h1,
+body:not(.readability-high) h2,
+body:not(.readability-high) .alfredisgone-brand {
+    text-shadow: 0 0 calc(5px * var(--glow-intensity)) currentColor,
+                 0 0 calc(10px * var(--glow-intensity)) currentColor;
+}
+
+/* =========================== */
+/* 5. Layout Components        */
+/* =========================== */
+
+/* Main Container */
+#main_results, #main_index, #main_preferences, #main_about, #main_stats {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Terminal Window */
+.terminal-window {
+    background: var(--terminal-bg);
+    border: 2px solid var(--terminal-border);
+    margin: 20px auto;
+    max-width: 1200px;
+    position: relative;
+    box-shadow: 0 0 calc(20px * var(--glow-intensity)) rgba(0, 255, 0, 0.3);
+}
+
+.terminal-header {
+    background: var(--terminal-border);
+    color: var(--terminal-black);
+    padding: 5px 15px;
+    font-weight: bold;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.terminal-body {
+    padding: 20px;
+}
+
+/* =========================== */
+/* 6. Typography               */
+/* =========================== */
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--terminal-green);
+    font-weight: bold;
+    margin: 1em 0 0.5em;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.1rem; }
+
+p {
+    margin: 0.5em 0;
+}
+
+/* ALFREDISGONE Branding with Terminal Cursor */
+.alfredisgone-brand {
+    color: var(--terminal-green) !important;
+    font-size: 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-style: normal;
+    text-align: center;
+    margin: 20px 0;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.alfredisgone-brand::before {
+    content: "> ";
+    color: var(--terminal-amber);
+}
+
+.alfredisgone-brand::after {
+    content: "_";
+    animation: cursorBlink 1s infinite;
+    color: var(--terminal-green);
+}
+
+/* =========================== */
+/* 7. Forms & Inputs           */
+/* =========================== */
+
+/* Search Container */
+#search, .search_box {
+    margin: 20px auto;
+    max-width: 800px;
+    position: relative;
+}
+
+/* Search Form */
+form#search_form, .search_form {
+    border: 1px solid var(--terminal-border);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    position: relative;
+}
+
+/* Terminal Prompt Style */
+.search-prompt::before {
+    content: "search@alfredisgone:~$ ";
+    color: var(--terminal-amber);
+    font-weight: bold;
+}
+
+/* Input Fields */
+input[type="text"], 
+input[type="search"], 
+input[type="password"],
+select,
+textarea,
+#q {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid var(--terminal-green) !important;
+    color: var(--terminal-green) !important;
+    font-family: var(--font-mono) !important;
+    font-size: 14px !important;
+    padding: 8px 2px !important;
+    width: 70% !important;
+    max-width: 400px !important;
+    outline: none !important;
+    caret-color: var(--terminal-green) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    box-shadow: 0 1px 0 var(--terminal-green) !important;
+}
+
+/* Buttons */
+button, 
+input[type="submit"], 
+.btn {
+    background: transparent !important;
+    border: 1px solid var(--terminal-green) !important;
+    color: var(--terminal-green) !important;
+    padding: 8px 20px !important;
+    font-family: var(--font-mono) !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    text-transform: uppercase !important;
+    transition: all 0.2s !important;
+    margin: 5px !important;
+}
+
+button:hover, 
+input[type="submit"]:hover,
+.btn:hover {
+    background: var(--terminal-green) !important;
+    color: var(--terminal-black) !important;
+    box-shadow: 0 0 calc(15px * var(--glow-intensity)) var(--terminal-green) !important;
+    transform: translateY(-1px);
+}
+
+/* Select Dropdowns */
+select {
+    background: var(--terminal-black) !important;
+    border: 1px solid var(--terminal-green) !important;
+    color: var(--terminal-green) !important;
+    padding: 5px 10px !important;
+    font-family: var(--font-mono) !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+    max-width: 400px !important;
+}
+
+/* =========================== */
+/* 8. Search Results           */
+/* =========================== */
+
+/* Results Container */
+#results, .results {
+    margin-top: 20px;
+}
+
+/* Individual Result */
+.result {
+    border-left: 3px solid var(--terminal-green);
+    padding: 15px;
+    margin: 15px 0;
+    background: rgba(0, 255, 0, 0.02);
+    transition: all 0.2s;
+}
+
+.result:hover {
+    background: rgba(0, 255, 0, 0.05);
+    border-left-color: var(--terminal-amber);
+    transform: translateX(5px);
+}
+
+/* Result Title */
+.result h4 {
+    margin: 0 0 5px 0;
+}
+
+.result h4 a {
+    color: var(--terminal-green) !important;
+    text-decoration: none !important;
+    font-size: 16px !important;
+    font-weight: bold;
+}
+
+.result h4 a:before {
+    content: "> ";
+    color: var(--terminal-amber);
+}
+
+.result h4 a:hover {
+    color: var(--terminal-amber) !important;
+    text-shadow: 0 0 calc(5px * var(--glow-intensity)) var(--terminal-amber);
+}
+
+/* Result URL */
+.result .url,
+.result cite {
+    color: var(--terminal-amber) !important;
+    font-size: 12px !important;
+    opacity: 0.8;
+    display: block;
+    margin: 5px 0;
+}
+
+/* Result Content */
+.result .content,
+.result p {
+    color: var(--terminal-dim-green) !important;
+    line-height: 1.4;
+    margin: 5px 0;
+}
+
+/* =========================== */
+/* 9. Dead Cat ASCII (GREEN)   */
+/* =========================== */
+
+.dead-cat-ascii,
+pre.dead-cat {
+    color: var(--terminal-green) !important;
+    text-shadow: 0 0 calc(10px * var(--glow-intensity)) var(--terminal-green), 
+                 0 0 calc(20px * var(--glow-intensity)) var(--terminal-green);
+    font-family: monospace !important;
+    white-space: pre !important;
+    line-height: 1.2 !important;
+    text-align: center;
+    margin: 20px auto;
+    display: block;
+    animation: terminalGlitch calc(10s * var(--animation-speed)) infinite;
+}
+
+@keyframes terminalGlitch {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    92.5% { opacity: 0.6; }
+    93% { opacity: 1; }
+}
+
+/* Mini Floating Cat */
+.mini-dead-cat {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: var(--terminal-green);
+    font-size: 10px;
+    text-shadow: 0 0 calc(5px * var(--glow-intensity)) var(--terminal-green);
+    z-index: 1000;
+    opacity: 0.8;
+    white-space: pre;
+    line-height: 1;
+    font-family: monospace;
+}
+
+/* =========================== */
+/* 10. Pagination              */
+/* =========================== */
+
+.pagination {
+    text-align: center;
+    margin: 30px 0;
+    padding: 20px;
+}
+
+.pagination a,
+.pagination span {
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border: 1px solid var(--terminal-green);
+    color: var(--terminal-green);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.pagination a:hover {
+    background: var(--terminal-green);
+    color: var(--terminal-black);
+}
+
+.pagination .current {
+    background: var(--terminal-green);
+    color: var(--terminal-black);
+    font-weight: bold;
+}
+
+/* =========================== */
+/* 11. No Results              */
+/* =========================== */
+
+.no-results {
+    text-align: center;
+    padding: 50px;
+    color: var(--terminal-amber);
+}
+
+.no-results pre {
+    color: var(--terminal-green);
+    display: inline-block;
+    text-shadow: 0 0 calc(10px * var(--glow-intensity)) currentColor;
+    margin: 20px 0;
+}
+
+/* =========================== */
+/* 12. Preferences Page        */
+/* =========================== */
+
+.preferences-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.preference-group {
+    border: 1px solid var(--terminal-green);
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.preference-group h3 {
+    color: var(--terminal-amber);
+    margin-bottom: 15px;
+}
+
+.preference-item {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.preference-item label {
+    color: var(--terminal-green);
+    display: inline-block;
+    min-width: 200px;
+    margin-right: 20px;
+}
+
+.preference-item select,
+.preference-item input {
+    flex: 1;
+    max-width: 300px !important;
+}
+
+/* Readability Mode Selector */
+.readability-selector {
+    border: 2px solid var(--terminal-amber);
+    padding: 20px;
+    margin: 30px 0;
+    background: rgba(255, 176, 0, 0.1);
+}
+
+.readability-selector h3 {
+    color: var(--terminal-amber);
+    margin-bottom: 15px;
+}
+
+.readability-option {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid var(--terminal-green);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.readability-option:hover {
+    background: rgba(0, 255, 0, 0.1);
+}
+
+.readability-option.active {
+    background: var(--terminal-green);
+    color: var(--terminal-black);
+}
+
+/* =========================== */
+/* 13. Footer                  */
+/* =========================== */
+
+.footer-links,
+#footer {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+    border-top: 1px solid var(--terminal-green);
+}
+
+.footer-links a {
+    color: var(--terminal-green);
+    text-decoration: none;
+    margin: 0 20px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 calc(5px * var(--glow-intensity)) currentColor;
+}
+
+/* Exit Code Easter Egg */
+.exit-code {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    color: var(--terminal-red);
+    font-size: 10px;
+    opacity: 0.3;
+    font-family: monospace;
+}
+
+/* =========================== */
+/* 14. Animations              */
+/* =========================== */
+
+/* Cursor Blink */
+@keyframes cursorBlink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    height: 18px;
+    background: var(--terminal-green);
+    animation: cursorBlink calc(1s * var(--animation-speed)) infinite;
+    vertical-align: text-bottom;
+}
+
+/* Terminal Glow */
+@keyframes terminalGlow {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+/* Text Flicker */
+@keyframes textFlicker {
+    0%, 100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.6; }
+    94% { opacity: 1; }
+}
+
+/* =========================== */
+/* 15. Responsive Design       */
+/* =========================== */
+
+@media (max-width: 768px) {
+    body {
+        font-size: 12px;
+    }
+    
+    .terminal-window {
+        margin: 10px;
+    }
+    
+    .alfredisgone-brand {
+        font-size: 2rem;
+    }
+    
+    input[type="text"],
+    input[type="search"],
+    #q {
+        width: 100% !important;
+    }
+    
+    .result {
+        padding: 10px;
+        margin: 10px 0;
+    }
+    
+    .footer-links a {
+        display: block;
+        margin: 10px 0;
+    }
+    
+    .preference-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .preference-item label {
+        margin-bottom: 10px;
+    }
+}
+
+/* =========================== */
+/* 16. Accessibility           */
+/* =========================== */
+
+/* Skip to content link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--terminal-green);
+    color: var(--terminal-black);
+    padding: 8px;
+    text-decoration: none;
+    z-index: 100;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Focus indicators */
+:focus {
+    outline: 2px solid var(--terminal-green);
+    outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    body {
+        --animation-speed: 0;
+        --background-effects: 0;
+        --matrix-opacity: 0;
+        --scanline-opacity: 0;
+    }
+    
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =========================== */
+/* 17. Print Styles            */
+/* =========================== */
+
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+    
+    #matrix-rain,
+    body::before,
+    body::after,
+    .mini-dead-cat,
+    .exit-code {
+        display: none !important;
+    }
+}

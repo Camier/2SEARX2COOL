@@ -1,0 +1,11 @@
+=== SearXNG Port Mappings ===
+NAMES                  PORTS
+searxng-auth-proxy     0.0.0.0:8095->8000/tcp, [::]:8095->8000/tcp
+searxng-auth           0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp
+searxng-websocket      0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp
+searxng-api            0.0.0.0:5001->5001/tcp, [::]:5001->5001/tcp
+searxng-convivial      0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+searxng-postgres       5432/tcp
+searxng-minio          0.0.0.0:9000-9001->9000-9001/tcp, [::]:9000-9001->9000-9001/tcp
+searxng-redis-pubsub   6379/tcp
+searxng-redis-cache    6379/tcp

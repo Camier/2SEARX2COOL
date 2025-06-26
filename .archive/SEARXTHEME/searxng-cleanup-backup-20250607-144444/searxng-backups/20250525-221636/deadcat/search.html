@@ -1,0 +1,97 @@
+<!-- TERMINAL SEARCH INTERFACE WITH FULL FUNCTIONALITY -->
+<form id="search" method="{{ method or 'POST' }}" action="{{ url_for('search') }}" role="search">
+    <div class="terminal-search-container">
+        <!-- Search Box -->
+        <div class="search-box-wrapper">
+            <label for="q" class="search-label">search@alfredisgone:~$</label>
+            <input id="q" name="q" type="search" placeholder="Enter search query..." 
+                   autocomplete="off" spellcheck="false" autocorrect="off" 
+                   value="{{ q }}" class="terminal-input" autofocus>
+            <button id="send_search" type="submit" class="terminal-button">&gt; EXECUTE</button>
+            <button id="clear_search" type="reset" class="terminal-button">&gt; CLEAR</button>
+        </div>
+
+        <!-- CATEGORIES (Essential for filtering) -->
+        <div class="search-categories terminal-section">
+            <div class="terminal-label">[CATEGORIES]</div>
+            <div class="category-tabs">
+                {% for categ in categories|default([]) %}
+                <label class="category-tab">
+                    <input type="checkbox" name="category_{{ categ.id }}" value="1"
+                           {% if categ.id in selected_categories %}checked{% endif %}>
+                    <span class="terminal-checkbox">[{{ categ.name|upper }}]</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- FILTERS SECTION -->
+        <div class="search-filters terminal-section">
+            <details class="filters-details">
+                <summary class="terminal-summary">[ADVANCED_FILTERS]</summary>
+                <div class="filters-grid">
+                    <!-- Time Range -->
+                    <div class="filter-group">
+                        <label class="terminal-label">[TIME_RANGE]</label>
+                        <select name="time_range" class="terminal-select">
+                            <option value="" {% if time_range == '' %}selected{% endif %}>Any time</option>
+                            <option value="day" {% if time_range == 'day' %}selected{% endif %}>Last day</option>
+                            <option value="week" {% if time_range == 'week' %}selected{% endif %}>Last week</option>
+                            <option value="month" {% if time_range == 'month' %}selected{% endif %}>Last month</option>
+                            <option value="year" {% if time_range == 'year' %}selected{% endif %}>Last year</option>
+                        </select>
+                    </div>
+
+                    <!-- Language -->
+                    <div class="filter-group">
+                        <label class="terminal-label">[LANGUAGE]</label>
+                        <select name="language" class="terminal-select">
+                            <option value="all" {% if current_language == 'all' %}selected{% endif %}>Any language</option>
+                            {% for lang_code, lang_name in supported_languages.items()|default({}) %}
+                            <option value="{{ lang_code }}" {% if current_language == lang_code %}selected{% endif %}>
+                                {{ lang_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Safe Search -->
+                    <div class="filter-group">
+                        <label class="terminal-label">[SAFE_SEARCH]</label>
+                        <select name="safesearch" class="terminal-select">
+                            <option value="0" {% if safesearch == '0' %}selected{% endif %}>Off</option>
+                            <option value="1" {% if safesearch == '1' %}selected{% endif %}>Moderate</option>
+                            <option value="2" {% if safesearch == '2' %}selected{% endif %}>Strict</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ENGINE SELECTION -->
+                <div class="engines-selection">
+                    <div class="terminal-label">[SEARCH_ENGINES]</div>
+                    <div class="engines-grid">
+                        {% for categ_name, engines in engines_by_category.items()|default({}) %}
+                        <fieldset class="engine-category">
+                            <legend class="terminal-legend">&gt; {{ categ_name|upper }}</legend>
+                            {% for engine in engines %}
+                            <label class="engine-label">
+                                <input type="checkbox" name="engine_{{ engine.name }}" value="1"
+                                       {% if engine.name in disabled_engines %}disabled{% endif %}
+                                       {% if engine.name not in disabled_engines %}checked{% endif %}>
+                                <span class="terminal-checkbox">{{ engine.name }}</span>
+                            </label>
+                            {% endfor %}
+                        </fieldset>
+                        {% endfor %}
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <!-- Hidden fields -->
+        <input type="hidden" name="pageno" value="{{ pageno }}">
+        {% for category in selected_categories|default([]) %}
+        <input type="hidden" name="category_{{ category }}" value="1">
+        {% endfor %}
+    </div>
+</form>

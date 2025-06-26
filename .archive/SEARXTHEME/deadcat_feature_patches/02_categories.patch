@@ -1,0 +1,74 @@
+--- Add this to deadcat/results.html after the search form ---
+
+<!-- Search Categories -->
+{% if categories %}
+<div id="categories" class="terminal-section">
+    <div class="section-header">[SEARCH CATEGORIES]</div>
+    <div class="categories-grid">
+        {% for category in categories %}
+        <div class="category-item">
+            <input type="checkbox" 
+                   id="checkbox_{{ category.id }}" 
+                   name="category_{{ category.id }}"
+                   {% if category.id in selected_categories %}checked{% endif %}>
+            <label for="checkbox_{{ category.id }}" class="terminal-label">
+                {{ _(category.name)|upper }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+--- Add this CSS to style categories ---
+<style>
+.terminal-section {
+    border: 1px solid #00ff00;
+    background: rgba(0, 255, 0, 0.05);
+    padding: 15px;
+    margin: 15px 0;
+    position: relative;
+}
+
+.section-header {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: #000;
+    padding: 0 5px;
+    color: #ffb000;
+    font-size: 10px;
+}
+
+.categories-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.category-item input[type="checkbox"] {
+    display: none;
+}
+
+.terminal-label {
+    display: inline-block;
+    padding: 5px 15px;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.category-item input[type="checkbox"]:checked + .terminal-label {
+    background: #00ff00;
+    color: #000;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+.terminal-label:hover {
+    border-color: #ffb000;
+    color: #ffb000;
+}
+</style>

@@ -71,6 +71,7 @@
   "devDependencies": {
     "@electron/rebuild": "^3.6.0",
     "@playwright/test": "^1.44.0",
+    "@tanstack/react-query-devtools": "^5.62.8",
     "@types/better-sqlite3": "^7.6.10",
     "@types/node": "^20.19.1",
     "@types/react": "^19.1.8",
@@ -80,7 +81,6 @@
     "@vitejs/plugin-react": "^4.6.0",
     "@vitest/coverage-v8": "^1.6.0",
     "@vitest/ui": "^1.6.0",
-    "@tanstack/react-query-devtools": "^5.62.8",
     "chalk": "^4.1.2",
     "clean-css": "^5.3.3",
     "commander": "^12.0.0",
@@ -125,7 +125,9 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@electron/remote": "^2.1.2",
     "@mui/material": "^5.15.0",
+    "@rollup/rollup-linux-x64-gnu": "^4.44.0",
     "@sentry/electron": "^4.20.0",
+    "@tanstack/react-query": "^5.62.8",
     "acrcloud": "^1.4.0",
     "axios": "^1.7.2",
     "better-sqlite3": "^11.0.0",
@@ -142,7 +144,6 @@
     "p-queue": "^8.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "@tanstack/react-query": "^5.62.8",
     "react-router-dom": "^6.23.0",
     "zod": "^3.23.8"
   },

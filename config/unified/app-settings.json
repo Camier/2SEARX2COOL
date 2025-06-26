@@ -1,0 +1,9 @@
+{
+  "theme": "system",
+  "language": "en",
+  "serverPort": 8888,
+  "orchestratorPort": 8889,
+  "autoStart": false,
+  "minimizeToTray": true,
+  "globalShortcuts": true
+}

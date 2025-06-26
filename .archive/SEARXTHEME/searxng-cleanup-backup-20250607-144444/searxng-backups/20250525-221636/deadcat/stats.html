@@ -1,0 +1,60 @@
+{% extends "deadcat/base.html" %}
+{% block title %}{{ _('Stats') }} - {% endblock %}
+
+{% block content %}
+<main id="main_stats" role="main">
+    <div class="terminal-window">
+        <div class="terminal-header">
+            <span>STATS.EXE - SYSTEM_STATISTICS</span>
+            <span>[■][□][×]</span>
+        </div>
+        
+        <div class="terminal-body">
+            <h1>&gt; SYSTEM STATISTICS</h1>
+            
+            <div style="margin: 20px 0;">
+                <h2 style="color: #ffb000;">ENGINE STATUS</h2>
+                <pre style="color: #00ff00; background: rgba(0, 255, 0, 0.1); padding: 15px;">
+[ALFREDISGONE SYSTEM STATISTICS]
+================================
+CAT_STATUS............: TERMINATED
+LIVES_REMAINING.......: -1/9
+MEMORIAL_MODE.........: ACTIVE
+MATRIX_RAIN...........: ENABLED
+EASTER_EGGS...........: 5 HIDDEN
+FRENCH_MESSAGES.......: 4 LOADED
+THEME_VERSION.........: 4.0-HARMONIZED
+EXIT_CODE.............: 9_LIVES_EXCEEDED
+READABILITY_MODES.....: 3 AVAILABLE
+================================</pre>
+            </div>
+            
+            {% if stats %}
+            <div style="margin: 30px 0;">
+                <h2 style="color: #00ff00;">SEARCH ENGINES</h2>
+                <div style="background: rgba(0, 255, 0, 0.05); padding: 15px;">
+                    {% for engine in stats %}
+                    <div style="margin: 10px 0; padding: 10px; border-left: 2px solid #00ff00;">
+                        <h3 style="color: #ffb000; margin: 0;">{{ engine.name }}</h3>
+                        <p style="color: #00ff00; margin: 5px 0;">
+                            <span>[SEARCHES: {{ engine.search_count }}]</span>
+                            <span>[AVG_TIME: {{ engine.avg_time|round(3) }}s]</span>
+                            {% if engine.errors %}
+                            <span style="color: #ff0040;">[ERRORS: {{ engine.errors }}]</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="{{ url_for('index') }}" style="padding: 10px 20px; border: 1px solid #00ff00; color: #00ff00;">
+                    &gt; RETURN TO SEARCH
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,19 @@
+SearXNG Cleanup Report
+Date: Sat Jun  7 14:58:48 CEST 2025
+
+Actions performed:
+1. Created backup directory: /home/mik/searxng-cleanup-backup-20250607-145818
+2. Stopped Redis on port 6380 (if running)
+3. Archived and removed ~/searxng directory
+4. Moved backup directories to archive
+5. Cleaned up Python virtual environments
+6. Removed configuration files
+
+Preserved:
+- ~/searxng-setup (contains installation scripts and configs)
+- ~/GITHUB/searxng-project (GitHub project directory)
+- Python package installations (can be cleaned separately if needed)
+
+Next steps:
+1. Review ~/searxng-setup for reusable configurations
+2. Proceed with fresh SearXNG + Tailscale installation

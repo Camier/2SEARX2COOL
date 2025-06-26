@@ -1,0 +1,31 @@
+[Unit]
+Description=2SEARX2COOL Production Orchestrator
+After=network.target redis.service postgresql.service
+Requires=redis.service
+
+[Service]
+Type=simple
+User=mik
+Group=mik
+WorkingDirectory=/home/mik/SEARXNG/2SEARX2COOL
+Environment="PATH=/home/mik/SEARXNG/2SEARX2COOL/venv/bin"
+Environment="PYTHONPATH=/home/mik/SEARXNG/2SEARX2COOL"
+ExecStart=/home/mik/SEARXNG/2SEARX2COOL/venv/bin/python3 /home/mik/SEARXNG/2SEARX2COOL/orchestrator/app_production.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Production security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/home/mik/SEARXNG/2SEARX2COOL
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
